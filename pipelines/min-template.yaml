@@ -1,0 +1,13 @@
+description: |
+  Mean template
+imports:
+  - ${PROC_DECAM_DIR}/pipelines/DEEP-template.yaml
+
+tasks:
+  assembleCoadd:
+    class: lsst.drp.tasks.assemble_coadd.CompareWarpAssembleCoaddTask
+    config:
+      doInterp: false
+      statistic: MIN
+      assembleStaticSkyModel.statistic: MIN
+      assembleStaticSkyModel.doInterp: false

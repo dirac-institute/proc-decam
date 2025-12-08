@@ -1,0 +1,12 @@
+description: BIAS calibration construction for DECam
+instrument: lsst.obs.decam.DarkEnergyCamera
+imports:
+  - location: $CP_PIPE_DIR/pipelines/DECam/cpBias.yaml
+
+subsets:
+  step1:
+    subset:
+    - cpBiasIsr
+  step2:
+    subset:
+    - cpBiasCombine

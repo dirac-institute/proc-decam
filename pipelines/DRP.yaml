@@ -1,0 +1,412 @@
+description: |
+  The DRP pipeline specialized for the DECam instrument, developed against the
+  DEEP dataset.
+imports:
+  - ${DRP_PIPE_DIR}/pipelines/DECam/DRP-Merian.yaml
+
+tasks:
+  applySuspect:
+    class: proc_decam.tasks.applyDefects.ApplyDefectsTask
+    config:
+      connections.defects: "suspectMask"
+      connections.ccdExposure: "postISRCCD"
+      connections.outputExposure: "postISRCCD_masked"
+      maskPlane: "SUSPECT"
+  isr:
+    class: lsst.ip.isr.IsrTask
+  characterize:
+    class: lsst.pipe.tasks.characterizeImage.CharacterizeImageTask
+    config:
+      connections.exposure: "postISRCCD_masked"
+  calibrate:
+    class: lsst.pipe.tasks.calibrate.CalibrateTask
+    config: 
+      astromRefObjLoader.anyFilterMapsToThis: "phot_g_mean" # gaia refcats flux columns are phot_g_mean_flux, phot_bp_mean_flux, phot_rp_mean_flux # https://www.cosmos.esa.int/web/gaia/iow_20180316
+      photoRefObjLoader.filterMap:
+        VR: "r" # ps1 refcats flux columns are g_flux, r_flux, i_flux, z_flux, y_flux # https://outerspace.stsci.edu/display/PANSTARRS/PS1+Filter+properties
+      photoCal.applyColorTerms: false # Applying color terms for filter='VR DECam c0007 6300.0 2600.0', config.photoCatName=ps1_pv3_3pi_20170110 because config.applyColorTerms is True 
+      python: |
+        config.computeSummaryStats.fiducialSkyBackground.update(dict(VR=1))
+        config.computeSummaryStats.fiducialPsfSigma.update(dict(VR=1))
+        config.computeSummaryStats.fiducialZeroPoint.update(dict(VR=25.0))
+
+  isolatedStarAssociation:
+    class: lsst.pipe.tasks.isolatedStarAssociation.IsolatedStarAssociationTask
+    config:
+      python:
+        config.band_order += ["VR"]
+
+  jointcal:
+    class: lsst.jointcal.JointcalTask
+    config:
+      connections.astrometryRefCat: gaia_dr3_20230707
+      astrometryRefObjLoader.anyFilterMapsToThis: phot_g_mean
+      photometryRefObjLoader.filterMap:
+        VR: "r"
+      astrometryOutlierRelativeTolerance: 0.002 # faster convergence: default=0; Convergence tolerance for outlier rejection threshold
+      allowLineSearch: true # for photometry
+      applyColorTerms: false # No colorterm found for filter 'VR DECam c0007 6300.0 2600.0' with photoCatName 'ps1_pv3_3pi_20170110' = catalog 'ps1*'
+  
+  inject_exposure:
+    class: lsst.source.injection.inject_exposure.ExposureInjectTask
+    config:
+      external_psf: true # use finalVisitSummary
+      external_photo_calib: true
+      external_wcs: true
+      process_all_data_ids: true # write outputs for exposures without fakes 
+      connections.input_exposure: postISRCCD_masked
+      connections.output_exposure: injected_postISRCCD
+      connections.output_catalog: injected_postISRCCD_catalog
+      selection: |
+        np.isin(injection_catalog['EXPNUM'], {visit}) # select on visit
+
+  injected_characterizeImage:
+    class: lsst.pipe.tasks.characterizeImage.CharacterizeImageTask
+    config:
+      connections.exposure: injected_postISRCCD
+      connections.characterized: injected_icExp
+      connections.sourceCat: injected_icSrc
+      connections.backgroundModel: injected_icExpBackground
+      connections.outputSchema: injected_icSrc_schema
+
+  # then I want to re-run calibrate on the injected_postISRCCD
+  injected_calibrate:
+    class: lsst.pipe.tasks.calibrate.CalibrateTask 
+    config: 
+      # the below is the config for calibrate in this pipeline
+      astromRefObjLoader.anyFilterMapsToThis: "phot_g_mean" # gaia refcats flux columns are phot_g_mean_flux, phot_bp_mean_flux, phot_rp_mean_flux # https://www.cosmos.esa.int/web/gaia/iow_20180316
+      photoRefObjLoader.filterMap:
+        VR: "r" # ps1 refcats flux columns are g_flux, r_flux, i_flux, z_flux, y_flux # https://outerspace.stsci.edu/display/PANSTARRS/PS1+Filter+properties
+      photoCal.applyColorTerms: false # Applying color terms for filter='VR DECam c0007 6300.0 2600.0', config.photoCatName=ps1_pv3_3pi_20170110 because config.applyColorTerms is True 
+      python: |
+        config.computeSummaryStats.fiducialSkyBackground.update(dict(VR=1))
+        config.computeSummaryStats.fiducialPsfSigma.update(dict(VR=1))
+        config.computeSummaryStats.fiducialZeroPoint.update(dict(VR=25.0))
+      # the below is pulled from $DRP_PIPE_DIR/pipelines/DECam/DRP.yaml and imported pipelines
+      photoCal.match.referenceSelection.magLimit.fluxField: i_flux
+      photoCal.match.referenceSelection.magLimit.maximum: 22
+      # injected configs
+      connections.icSourceSchema: injected_icSrc_schema
+      connections.outputSchema: injected_src_schema
+      connections.exposure: injected_icExp
+      connections.background: injected_icExpBackground
+      connections.icSourceCat: injected_icSrc
+      connections.outputExposure: injected_calexp
+      connections.outputCat: injected_src
+      connections.outputBackground: injected_calexpBackground
+      connections.outputSummaryMetrics: injected_calexpSummary_metrics
+      connections.matches: injected_srcMatch
+      connections.matchesDenormalized: injected_srcMatchFull
+
+  writeRecalibratedSourceTable:
+    class: lsst.pipe.tasks.postprocess.WriteRecalibratedSourceTableTask
+    config:
+      connections.catalogType: injected_
+      connections.outputCatalog: injected_source
+  
+  transformSourceTable: 
+    class: lsst.pipe.tasks.postprocess.TransformSourceTableTask
+    config:
+      connections.catalogType: injected_
+
+  consolidateSourceTable:
+    class: lsst.pipe.tasks.postprocess.ConsolidateSourceTableTask
+    config:
+      connections.catalogType: injected_
+
+  updateVisitSummary:
+    class: lsst.drp.tasks.update_visit_summary.UpdateVisitSummaryTask
+    config:
+      wcs_provider: input_summary
+      photo_calib_provider: input_summary
+      compute_summary_stats.fiducialSkyBackground:
+        u: 1
+        g: 1
+        r: 1
+        i: 1
+        z: 1
+        y: 1
+        VR: 1
+      compute_summary_stats.fiducialPsfSigma:
+        u: 1
+        g: 1
+        r: 1
+        i: 1
+        z: 1
+        y: 1
+        VR: 1
+      compute_summary_stats.fiducialZeroPoint:
+        u: 25.0
+        g: 25.0
+        r: 25.0
+        i: 25.0
+        z: 25.0
+        y: 25.0
+        VR: 25.0
+
+  makeWarp:
+    class: lsst.pipe.tasks.makeWarp.MakeWarpTask
+    config:
+      doApplySkyCorr: false # requires skyCorr input
+      connections.calExpList: "injected_calexp"
+      connections.backgroundList: "injected_calexpBackground"
+  
+  assembleCoadd:
+    class: lsst.drp.tasks.assemble_coadd.CompareWarpAssembleCoaddTask
+    config:
+      doSelectVisits: false
+      assembleStaticSkyModel.doSelectVisits: false
+      statistic: MEANCLIP
+      assembleStaticSkyModel.statistic: MEANCLIP
+      prefilterArtifactsMaskPlanes: ["NO_DATA", "BAD", "SAT"] # remove SUSPECT from masking
+      badMaskPlanes: ['NO_DATA', 'BAD', 'SAT'] # remove SUSPECT from masking
+
+  detection: 
+    class: lsst.pipe.tasks.multiBand.DetectCoaddSourcesTask
+    config:
+      idGenerator.packer.bands:
+        u: 0
+        g: 1
+        r: 2
+        i: 3
+        z: 4
+        y: 5
+        VR: 6
+
+  mergeDetections:
+    class: lsst.pipe.tasks.mergeDetections.MergeDetectionsTask
+    config:
+      idGenerator.packer.bands:
+        u: 0
+        g: 1
+        r: 2
+        i: 3
+        z: 4
+        y: 5
+        VR: 6
+
+  deblend: 
+    class: lsst.pipe.tasks.deblendCoaddSourcesPipeline.DeblendCoaddSourcesMultiTask
+    config:
+      idGenerator.packer.bands:
+        u: 0
+        g: 1
+        r: 2
+        i: 3
+        z: 4
+        y: 5
+        VR: 6
+      
+  measure: 
+    class: lsst.pipe.tasks.multiBand.MeasureMergedCoaddSourcesTask
+    config:
+      idGenerator.packer.bands:
+        u: 0
+        g: 1
+        r: 2
+        i: 3
+        z: 4
+        y: 5
+        VR: 6
+      refObjLoader.filterMap:
+        VR: "r"
+
+  mergeMeasurements:
+    class: lsst.pipe.tasks.mergeMeasurements.MergeMeasurementsTask
+    config:
+      priorityList:
+      - "u"
+      - "g"
+      - "r"
+      - "i"
+      - "z"
+      - "y"
+      - "VR"
+
+  getTemplate:
+    class: lsst.ip.diffim.getTemplate.GetTemplateTask
+    config:
+      connections.coaddName: deep
+      connections.coaddExposures: deepCoadd
+      connections.template: deepDiff_templateExp
+      connections.fakesType: "injected_"
+  
+  subtractImages:
+    class: lsst.ip.diffim.subtractImages.AlardLuptonSubtractTask
+    config:
+      allowKernelSourceDetection: true
+      connections.coaddName: deep
+      connections.template: deepDiff_templateExp
+      connections.difference: deepDiff_differenceTempExp
+      connections.matchedTemplate: deepDiff_matchedExp
+      connections.fakesType: "injected_"
+
+  detectAndMeasureDiaSources:
+    class: lsst.ip.diffim.detectAndMeasure.DetectAndMeasureTask
+    config:
+      connections.coaddName: deep
+      connections.matchedTemplate: deepDiff_matchedExp
+      connections.difference: deepDiff_differenceTempExp
+      connections.subtractedMeasuredExposure: deepDiff_differenceExp
+      connections.science: "injected_calexp"
+
+  transformDiaSourceCat:
+    class: lsst.ap.association.TransformDiaSourceCatalogTask
+    config:
+      connections.coaddName: deep
+      connections.diaSourceSchema: deepDiff_diaSrc_schema
+      connections.diaSourceCat: deepDiff_diaSrc
+      connections.diffIm: deepDiff_differenceExp
+      connections.diaSourceTable: deepDiff_diaSrcTable
+  
+  consolidateDiaSourceTable:
+    class: lsst.pipe.tasks.postprocess.ConsolidateSourceTableTask
+    config:
+      connections.inputCatalogs: deepDiff_diaSrcTable
+      connections.outputCatalog: diaSourceTable
+  
+  drpAssociation:
+    class: lsst.pipe.tasks.drpAssociationPipe.DrpAssociationPipeTask
+    config:
+      connections.coaddName: deep
+      connections.diaSourceTables: deepDiff_diaSrcTable
+      connections.assocDiaSourceTable: deepDiff_assocDiaSrcTable
+      connections.diaObjectTable: deepDiff_diaObjTable
+
+  drpDiaCalculation:
+    class: lsst.pipe.tasks.drpDiaCalculationPipe.DrpDiaCalculationPipeTask
+    config:
+      connections.coaddName: deep
+      connections.assocDiaSourceTable: deepDiff_assocDiaSrcTable
+      connections.diaObjectTable: deepDiff_diaObjTable
+      connections.fullDiaObjectTable: deepDiff_fullDiaObjTable
+  consolidateAssocDiaSourceTable:
+    class: lsst.pipe.tasks.postprocess.ConsolidateTractTask
+    config:
+      connections.inputCatalogs: deepDiff_assocDiaSrcTable
+      connections.outputCatalog: diaSourceTable_tract
+  consolidateFullDiaObjectTable:
+    class: lsst.pipe.tasks.postprocess.ConsolidateTractTask
+    config:
+      connections.inputCatalogs: deepDiff_fullDiaObjTable
+      connections.outputCatalog: diaObjectTable_tract
+  
+  forcedPhotCcd:
+    class: lsst.meas.base.ForcedPhotCcdTask
+    config:
+      connections.measCat: forced_calexp
+      connections.outputSchema: forced_calexp_schema
+      connections.exposure: injected_calexp
+
+  forcedPhotDiffim:
+    class: lsst.meas.base.ForcedPhotCcdTask
+    config:
+      connections.measCat: forced_diff
+      connections.outputSchema: forced_diff_schema
+      connections.exposure: deepDiff_differenceExp
+
+  forcedPhotCcdOnDiaObjects:
+    class: lsst.meas.base.ForcedPhotCcdFromDataFrameTask
+    config:
+      connections.exposure: injected_calexp
+      connections.refCat: deepDiff_fullDiaObjTable
+
+  forcedPhotDiffOnDiaObjects:
+    class: lsst.meas.base.ForcedPhotCcdFromDataFrameTask
+    config:
+      connections.refCat: deepDiff_fullDiaObjTable
+      connections.measCat: forced_diff_diaObject
+      connections.outputSchema: forced_diff_diaObject_schema
+      connections.exposure: deepDiff_differenceExp
+
+  transformForcedSourceOnDiaObjectTable:
+    class: lsst.pipe.tasks.postprocess.TransformForcedSourceTableTask
+    config:
+      referenceColumns: []
+      keyRef: diaObjectId
+      key: forcedSourceOnDiaObjectId
+      connections.inputCatalogs: mergedForcedSourceOnDiaObject
+      connections.outputCatalog: forcedSourceOnDiaObjectTable
+      connections.referenceCatalog: deepDiff_fullDiaObjTable
+
+subsets:
+  step0: # detector/exposure
+    subset:
+    - isrForCrosstalkSources
+  step1: # detector/visit
+    subset:
+    - isr
+    - applySuspect
+    - characterizeImage
+    - calibrate
+    - transformPreSourceTable
+    - writePreSourceTable
+  step1b:
+    subset:
+    - isr
+    - characterizeImage
+    - calibrate    
+  step2a:  # visit
+    - consolidatePreSourceTable
+    - consolidateVisitSummary
+  step2b: # tract
+    # - jointcal # tract-level PSF/WCS models; doesn't work
+    - isolatedStarAssociation # tract-level isolated stars
+  step2c: # visit
+    subset:
+    - finalizeCharacterization # produces finalVisitSummary
+    - updateVisitSummary 
+  step2d: # detector/visit; inject fakes
+    subset:
+    - inject_exposure # inject fakes
+    - injected_characterizeImage
+    - injected_calibrate
+    - writeRecalibratedSourceTable # looks like this updates the source catalogs from injected_calibrate using the calibrations from finalVisitSummary
+    - transformSourceTable
+  step2e: # visit
+    subset:
+    - consolidateSourceTable
+  step2f: # instrument; summaries over all visits
+    subset:
+    - makeCcdVisitTable
+    - makeVisitTable
+  step3a: # patch/visit
+    subset:
+    - makeWarp
+  step3b: # patch/band
+    subset:
+    - assembleCoadd # create coadd
+  step3c: # patch
+    subset:
+    - detection # detect on coadd
+    - mergeDetections # merge 
+    - deblend # deblend
+    - measure # measure
+    - mergeMeasurements 
+    - forcedPhotCoadd
+    - writeObjectTable
+    - transformObjectTable
+  step3d: # tract
+    subset:
+    - consolidateObjectTable
+  step4a: # detector/visit
+    subset:
+    - getTemplate
+    - subtractImages
+    - detectAndMeasureDiaSources
+  step4b: # detector/visit
+    subset:
+    - transformDiaSourceCat
+    - forcedPhotDiffim
+    - forcedPhotCcd
+  step4c: # visit
+    subset:
+    - consolidateDiaSourceTable
+  step4d: # patch
+    subset:
+    - drpAssociation
+    - drpDiaCalculation
+  step4e: # detector/tract/visit
+    subset:
+    - forcedPhotCcdOnDiaObjects
+    - forcedPhotDiffOnDiaObjects

@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=80", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "proc-decam"
+license = {file = "LICENSE"}
+readme = "README.md"
+authors = [
+    { name = "Steven Stetzler", email = "steven.stetzler@gmail.com" }
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+]
+dynamic = ["version"]
+requires-python = ">=3.9"
+dependencies = [
+    "astropy",
+    "joblib",
+    "get-lsst-refcats @ git+https://github.com/dirac-institute/lsst_refcats/"
+]
+description = "Process a DECam imaging survey using the LSST Science Pipelines."
+
+[project.urls]
+"Source Code" = "https://github.com/stevenstetzler/proc-decam"
+
+[project.scripts]
+proc-decam = "proc_decam.cli:main"
+
+[tool.setuptools_scm]
+write_to = "src/proc_decam/_version.py"
+version_scheme = "guess-next-dev"
+local_scheme = "no-local-version"
+

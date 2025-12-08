@@ -1,0 +1,1 @@
+# each Parsl worker will source this file on startup

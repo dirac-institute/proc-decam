@@ -1,0 +1,11 @@
+description: |
+  Median template
+imports:
+  - ${PROC_DECAM_DIR}/pipelines/template.yaml
+
+tasks:
+  assembleCoadd:
+    class: lsst.drp.tasks.assemble_coadd.CompareWarpAssembleCoaddTask
+    config:
+      statistic: MEDIAN
+      assembleStaticSkyModel.statistic: MEDIAN

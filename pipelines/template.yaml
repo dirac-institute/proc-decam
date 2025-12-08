@@ -1,0 +1,15 @@
+description: |
+  templates
+imports:
+  - ${DRP_PIPE_DIR}/pipelines/DECam/DRP-Merian.yaml
+
+tasks:
+  assembleCoadd:
+    class: lsst.drp.tasks.assemble_coadd.CompareWarpAssembleCoaddTask
+    config:
+      doSelectVisits: false
+      assembleStaticSkyModel.doSelectVisits: false
+      statistic: MEANCLIP
+      assembleStaticSkyModel.statistic: MEANCLIP
+      prefilterArtifactsMaskPlanes: ["NO_DATA", "BAD", "SAT"] # remove SUSPECT from masking
+      badMaskPlanes: ['NO_DATA', 'BAD', 'SAT'] # remove SUSPECT from masking

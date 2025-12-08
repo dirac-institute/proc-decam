@@ -1,0 +1,12 @@
+digraph Pipeline {
+graph [splines="ortho", nodesep="0.5", ranksep="0.75"];
+node [shape="box", fontname="Monospace", fontsize="14", margin="0.2,0.1", penwidth="3"];
+edge [color="black", arrowsize="1.5", penwidth="1.5", pad="10mm"];
+"cpFlatCombine:2" [style="filled", color="black", fillcolor="#B1F2EF", label=<<TABLE BORDER="0" CELLPADDING="5"><TR><TD ALIGN="LEFT"><B><FONT POINT-SIZE="18">cpFlatCombine</FONT></B></TD></TR><TR><TD ALIGN="LEFT">lsst.cp.pipe.cpCombine.CalibCombineByFilterTask</TD></TR><TR><TD ALIGN="LEFT"><I>dimensions:</I>&nbsp;{detector, physical_filter}</TD></TR></TABLE>>];
+"cpFlatNormalizeScales:0" [style="rounded,filled,bold", color="#00BABC", fillcolor="#F5F5F5", label=<<TABLE BORDER="0" CELLPADDING="5"><TR><TD ALIGN="LEFT"><B><FONT POINT-SIZE="18">cpFlatNormalizeScales</FONT></B></TD></TR><TR><TD ALIGN="LEFT"><I>dimensions:</I>&nbsp;{physical_filter}</TD></TR><TR><TD ALIGN="LEFT"><I>storage class:</I>&nbsp;StructuredDataDict</TD></TR></TABLE>>];
+"cpFlatIsrExp:0" [style="rounded,filled,bold", color="#00BABC", fillcolor="#F5F5F5", label=<<TABLE BORDER="0" CELLPADDING="5"><TR><TD ALIGN="LEFT"><B><FONT POINT-SIZE="18">cpFlatIsrExp</FONT></B></TD></TR><TR><TD ALIGN="LEFT"><I>dimensions:</I>&nbsp;{detector, exposure}</TD></TR><TR><TD ALIGN="LEFT"><I>storage class:</I>&nbsp;Exposure</TD></TR></TABLE>>];
+"flat:0" [style="rounded,filled,bold", color="#00BABC", fillcolor="#F5F5F5", label=<<TABLE BORDER="0" CELLPADDING="5"><TR><TD ALIGN="LEFT"><B><FONT POINT-SIZE="18">flat</FONT></B></TD></TR><TR><TD ALIGN="LEFT"><I>dimensions:</I>&nbsp;{detector, physical_filter}</TD></TR><TR><TD ALIGN="LEFT"><I>storage class:</I>&nbsp;ExposureF</TD></TR></TABLE>>];
+"cpFlatCombine:2" -> "flat:0";
+"cpFlatNormalizeScales:0" -> "cpFlatCombine:2";
+"cpFlatIsrExp:0" -> "cpFlatCombine:2";
+}

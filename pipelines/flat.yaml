@@ -1,0 +1,20 @@
+description: FLAT calibration construction
+instrument: lsst.obs.decam.DarkEnergyCamera
+imports:
+  - location: $CP_PIPE_DIR/pipelines/DECam/cpFlat.yaml
+  - location: $CP_PIPE_DIR/pipelines/DECam/RunIsrForCrosstalkSources.yaml
+
+subsets:
+  step0:
+    subset:
+    - overscan
+  step1:
+    subset:
+    - cpFlatIsr
+    - cpFlatMeasure
+  step2:
+    subset:
+    - cpFlatNormalize
+  step3:
+    subset:
+    - cpFlatCombine
