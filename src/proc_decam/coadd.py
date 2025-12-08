@@ -70,9 +70,10 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("repo")
-    parser.add_argument("coadd_name")
+    parser.add_argument("subset")
     parser.add_argument("--template-type", default="")
     parser.add_argument("--coadd-subset", default="")
+    parser.add_argument("--warp-coadd-name", default="deep")
     parser.add_argument("--where")
     parser.add_argument("--collections", nargs="+", default=[])
     parser.add_argument("--log-level", default="INFO")
@@ -106,25 +107,49 @@ def main():
     )
     parsl.load(config)
 
+    warp_collection = os.path.normpath(f"{args.coadd_subset}/{args.template_type}/coadd/warps")
+
     futures = [] # chage to dictionary
     inputs = []
+    # associate warps
+    cmd = [
+        "proc-decam",
+        "associate",
+        args.repo,
+        warp_collection,
+        "--collections", f"{args.subset}/drp",
+        "--datasets", f"{args.warp_coadd_name}Coadd_directWarp"
+    ]
+    cmd = " ".join(map(str, cmd))
+    func = partial(run_command)
+    setattr(func, "__name__", f"collection")
+    future = bash_app(func)(cmd, inputs=inputs)
+    inputs = [future]
+    futures.append(future)
+
+    cmd = [
+        "proc-decam",
+        "associate",
+        args.repo,
+        warp_collection,
+        "--collections", f"{args.subset}/drp",
+        "--datasets", f"{args.warp_coadd_name}Coadd_psfMatchedWarp"
+    ]
+    cmd = " ".join(map(str, cmd))
+    func = partial(run_command)
+    setattr(func, "__name__", f"collection")
+    future = bash_app(func)(cmd, inputs=inputs)
+    inputs = [future]
+    futures.append(future)    
+
     cmd = [
         "proc-decam",
         "collection",
         args.repo,
         "coadd",
-        args.coadd_name,
+        args.coadd_subset,
     ]
-    if args.template_type:
-        cmd += ["--template-type", args.template_type]
-    if args.coadd_subset:
-        cmd += ["--coadd-subset", args.coadd_subset]
-    # cmd = " ".join(map(str, cmd))
-    # print(cmd)
-    # p = run_and_pipe(cmd)
-    # p.wait()
-    # if p.returncode != 0:
-    #     raise RuntimeError("collection failed")
+    cmd += ["--template-type", args.template_type] if args.template_type else []
     cmd = " ".join(map(str, cmd))
     func = partial(run_command)
     setattr(func, "__name__", f"collection")
@@ -132,22 +157,32 @@ def main():
     inputs = [future]
     futures.append(future)
         
+    # execute coadd
+    # cmd = [
+    #     "proc-decam",
+    #     "execute",
+    #     args.repo,
+    #     os.path.normpath(f"{args.coadd_name}/{args.coadd_subset}/coadd/{args.template_type}"),
+    #     "--pipeline", f"{os.environ.get('PROC_DECAM_DIR')}/pipelines/{pipeline_lookup[args.template_type]}#assembleCoadd",
+    # ]
+    # if args.where:
+    #     cmd += [f"--where \"{args.where}\""]
+    # 
+    # coadd pipeline
+    steps = ["step3b", "step3c", "step3d"]
     cmd = [
         "proc-decam",
-        "execute",
+        "pipeline",
         args.repo,
-        os.path.normpath(f"{args.coadd_name}/{args.coadd_subset}/coadd/{args.template_type}"),
-        "--pipeline", f"{os.environ.get('PROC_DECAM_DIR')}/pipelines/{pipeline_lookup[args.template_type]}#assembleCoadd",
-    ]
-    if args.where:
-        cmd += [f"--where \"{args.where}\""]
-    # cmd = " ".join(map(str, cmd))
-    # print(cmd)
-    # p = run_and_pipe(cmd)
-    # p.wait()
-    # if p.returncode != 0:
-    #     raise RuntimeError("execute failed")
-
+        "coadd",
+        args.coadd_subset,
+        "--steps", 
+    ] + steps
+    cmd += ["--template-type", args.template_type] if args.template_type else []
+    cmd += ["--slurm"] if args.pipeline_slurm else []
+    cmd += [f"--where \"{args.where}\""] if args.where else []
+        
+    # collection
     cmd = " ".join(map(str, cmd))
     func = partial(run_command)
     setattr(func, "__name__", f"execute_coadd")
@@ -160,18 +195,10 @@ def main():
         "collection",
         args.repo,
         "coadd",
-        args.coadd_name,
+        args.coadd_subset,
     ]
-    if args.template_type:
-        cmd += ["--template-type", args.template_type]
-    if args.coadd_subset:
-        cmd += ["--coadd-subset", args.coadd_subset]
-    # cmd = " ".join(map(str, cmd))
-    # print(cmd)
-    # p = run_and_pipe(cmd)
-    # p.wait()
-    # if p.returncode != 0:
-    #     raise RuntimeError("collection failed")
+    cmd += ["--template-type", args.template_type] if args.template_type else []
+        
     cmd = " ".join(map(str, cmd))
     func = partial(run_command)
     setattr(func, "__name__", f"collection")

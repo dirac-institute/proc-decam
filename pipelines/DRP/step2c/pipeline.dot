@@ -8,8 +8,8 @@ edge [color="black", arrowsize="1.5", penwidth="1.5", pad="10mm"];
 "finalized_psf_ap_corr_catalog:0" [style="rounded,filled,bold", color="#00BABC", fillcolor="#F5F5F5", label=<<TABLE BORDER="0" CELLPADDING="5"><TR><TD ALIGN="LEFT"><B><FONT POINT-SIZE="18">finalized_psf_ap_corr_catalog</FONT></B></TD></TR><TR><TD ALIGN="LEFT"><I>dimensions:</I>&nbsp;{visit}</TD></TR><TR><TD ALIGN="LEFT"><I>storage class:</I>&nbsp;ExposureCatalog</TD></TR></TABLE>>];
 "finalized_src_table:0" [style="rounded,filled,bold", color="#00BABC", fillcolor="#F5F5F5", label=<<TABLE BORDER="0" CELLPADDING="5"><TR><TD ALIGN="LEFT"><B><FONT POINT-SIZE="18">finalized_src_table</FONT></B></TD></TR><TR><TD ALIGN="LEFT"><I>dimensions:</I>&nbsp;{visit}</TD></TR><TR><TD ALIGN="LEFT"><I>storage class:</I>&nbsp;DataFrame</TD></TR></TABLE>>];
 "updateVisitSummary:2" [style="filled", color="black", fillcolor="#B1F2EF", label=<<TABLE BORDER="0" CELLPADDING="5"><TR><TD ALIGN="LEFT"><B><FONT POINT-SIZE="18">updateVisitSummary</FONT></B></TD></TR><TR><TD ALIGN="LEFT">lsst.drp.tasks.update_visit_summary.UpdateVisitSummaryTask</TD></TR><TR><TD ALIGN="LEFT"><I>dimensions:</I>&nbsp;{visit}</TD></TR></TABLE>>];
-"visitSummary:0" [style="rounded,filled,bold", color="#00BABC", fillcolor="#F5F5F5", label=<<TABLE BORDER="0" CELLPADDING="5"><TR><TD ALIGN="LEFT"><B><FONT POINT-SIZE="18">visitSummary</FONT></B></TD></TR><TR><TD ALIGN="LEFT"><I>dimensions:</I>&nbsp;{visit}</TD></TR><TR><TD ALIGN="LEFT"><I>storage class:</I>&nbsp;ExposureCatalog</TD></TR></TABLE>>];
 "skyMap:0" [style="rounded,filled,bold", color="#00BABC", fillcolor="#F5F5F5", label=<<TABLE BORDER="0" CELLPADDING="5"><TR><TD ALIGN="LEFT"><B><FONT POINT-SIZE="18">skyMap</FONT></B></TD></TR><TR><TD ALIGN="LEFT"><I>dimensions:</I>&nbsp;{skymap}</TD></TR><TR><TD ALIGN="LEFT"><I>storage class:</I>&nbsp;SkyMap</TD></TR></TABLE>>];
+"visitSummary:0" [style="rounded,filled,bold", color="#00BABC", fillcolor="#F5F5F5", label=<<TABLE BORDER="0" CELLPADDING="5"><TR><TD ALIGN="LEFT"><B><FONT POINT-SIZE="18">visitSummary</FONT></B></TD></TR><TR><TD ALIGN="LEFT"><I>dimensions:</I>&nbsp;{visit}</TD></TR><TR><TD ALIGN="LEFT"><I>storage class:</I>&nbsp;ExposureCatalog</TD></TR></TABLE>>];
 "finalVisitSummary:0" [style="rounded,filled,bold", color="#00BABC", fillcolor="#F5F5F5", label=<<TABLE BORDER="0" CELLPADDING="5"><TR><TD ALIGN="LEFT"><B><FONT POINT-SIZE="18">finalVisitSummary</FONT></B></TD></TR><TR><TD ALIGN="LEFT"><I>dimensions:</I>&nbsp;{visit}</TD></TR><TR><TD ALIGN="LEFT"><I>storage class:</I>&nbsp;ExposureCatalog</TD></TR></TABLE>>];
 "2e69bcb2:0" [style="rounded,filled,bold", color="#00BABC", fillcolor="#F5F5F5", label=<<TABLE BORDER="0" CELLPADDING="5"><TR><TD ALIGN="LEFT"><B><FONT POINT-SIZE="18">isolated_star_sources</FONT></B></TD></TR><TR><TD ALIGN="LEFT"><B><FONT POINT-SIZE="18">isolated_star_cat</FONT></B></TD></TR><TR><TD ALIGN="LEFT"><I>dimensions:</I>&nbsp;{instrument, tract}</TD></TR><TR><TD ALIGN="LEFT"><I>storage class:</I>&nbsp;DataFrame</TD></TR></TABLE>>];
 "finalizeCharacterization:2" -> "finalized_psf_ap_corr_catalog:0";
@@ -21,7 +21,7 @@ edge [color="black", arrowsize="1.5", penwidth="1.5", pad="10mm"];
 "finalized_psf_ap_corr_catalog:0" -> "updateVisitSummary:2";
 "finalized_src_table:0" -> "updateVisitSummary:2";
 "updateVisitSummary:2" -> "finalVisitSummary:0";
-"visitSummary:0" -> "updateVisitSummary:2";
 "skyMap:0" -> "updateVisitSummary:2";
+"visitSummary:0" -> "updateVisitSummary:2";
 "2e69bcb2:0" -> "finalizeCharacterization:2";
 }

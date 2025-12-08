@@ -192,24 +192,8 @@
 <path fill="none" stroke="black" stroke-width="1.5" d="M1241.5,-1935.92C1241.5,-1935.92 1241.5,-1897.19 1241.5,-1897.19"/>
 <polygon fill="black" stroke="black" stroke-width="1.5" points="1246.75,-1897.19 1241.5,-1882.19 1236.25,-1897.2 1246.75,-1897.19"/>
 </g>
-<!-- deepCoadd_scarletModelData:0 -->
-<g id="node10" class="node">
-<title>deepCoadd_scarletModelData:0</title>
-<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M361.5,-1710C361.5,-1710 69.5,-1710 69.5,-1710 63.5,-1710 57.5,-1704 57.5,-1698 57.5,-1698 57.5,-1620 57.5,-1620 57.5,-1614 63.5,-1608 69.5,-1608 69.5,-1608 361.5,-1608 361.5,-1608 367.5,-1608 373.5,-1614 373.5,-1620 373.5,-1620 373.5,-1698 373.5,-1698 373.5,-1704 367.5,-1710 361.5,-1710"/>
-<text text-anchor="start" x="78.5" y="-1682.6" font-family="Monospace" font-weight="bold" font-size="18.00">deepCoadd_scarletModelData</text>
-<text text-anchor="start" x="78.5" y="-1653.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
-<text text-anchor="start" x="169.5" y="-1653.8" font-family="Monospace" font-size="14.00"> {patch}</text>
-<text text-anchor="start" x="78.5" y="-1626.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
-<text text-anchor="start" x="194.5" y="-1626.8" font-family="Monospace" font-size="14.00"> ScarletModelData</text>
-</g>
-<!-- deblend:2&#45;&gt;deepCoadd_scarletModelData:0 -->
-<g id="edge14" class="edge">
-<title>deblend:2&#45;&gt;deepCoadd_scarletModelData:0</title>
-<path fill="none" stroke="black" stroke-width="1.5" d="M922.99,-1831C639.29,-1831 268.75,-1831 268.75,-1831 268.75,-1831 268.75,-1725.14 268.75,-1725.14"/>
-<polygon fill="black" stroke="black" stroke-width="1.5" points="274,-1725.14 268.75,-1710.14 263.5,-1725.14 274,-1725.14"/>
-</g>
 <!-- deepCoadd_deblendedCatalog:0 -->
-<g id="node11" class="node">
+<g id="node10" class="node">
 <title>deepCoadd_deblendedCatalog:0</title>
 <path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M1387.5,-1710C1387.5,-1710 1095.5,-1710 1095.5,-1710 1089.5,-1710 1083.5,-1704 1083.5,-1698 1083.5,-1698 1083.5,-1620 1083.5,-1620 1083.5,-1614 1089.5,-1608 1095.5,-1608 1095.5,-1608 1387.5,-1608 1387.5,-1608 1393.5,-1608 1399.5,-1614 1399.5,-1620 1399.5,-1620 1399.5,-1698 1399.5,-1698 1399.5,-1704 1393.5,-1710 1387.5,-1710"/>
 <text text-anchor="start" x="1104.5" y="-1682.6" font-family="Monospace" font-weight="bold" font-size="18.00">deepCoadd_deblendedCatalog</text>
@@ -219,28 +203,44 @@
 <text text-anchor="start" x="1220.5" y="-1626.8" font-family="Monospace" font-size="14.00"> SourceCatalog</text>
 </g>
 <!-- deblend:2&#45;&gt;deepCoadd_deblendedCatalog:0 -->
-<g id="edge15" class="edge">
+<g id="edge14" class="edge">
 <title>deblend:2&#45;&gt;deepCoadd_deblendedCatalog:0</title>
 <path fill="none" stroke="black" stroke-width="1.5" d="M1241.5,-1779.86C1241.5,-1779.86 1241.5,-1725.24 1241.5,-1725.24"/>
 <polygon fill="black" stroke="black" stroke-width="1.5" points="1246.75,-1725.24 1241.5,-1710.24 1236.25,-1725.24 1246.75,-1725.24"/>
 </g>
-<!-- deepCoadd_scarletModelData:0&#45;&gt;measure:2 -->
+<!-- deepCoadd_scarletModelData:0 -->
+<g id="node11" class="node">
+<title>deepCoadd_scarletModelData:0</title>
+<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M361.5,-1710C361.5,-1710 69.5,-1710 69.5,-1710 63.5,-1710 57.5,-1704 57.5,-1698 57.5,-1698 57.5,-1620 57.5,-1620 57.5,-1614 63.5,-1608 69.5,-1608 69.5,-1608 361.5,-1608 361.5,-1608 367.5,-1608 373.5,-1614 373.5,-1620 373.5,-1620 373.5,-1698 373.5,-1698 373.5,-1704 367.5,-1710 361.5,-1710"/>
+<text text-anchor="start" x="78.5" y="-1682.6" font-family="Monospace" font-weight="bold" font-size="18.00">deepCoadd_scarletModelData</text>
+<text text-anchor="start" x="78.5" y="-1653.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
+<text text-anchor="start" x="169.5" y="-1653.8" font-family="Monospace" font-size="14.00"> {patch}</text>
+<text text-anchor="start" x="78.5" y="-1626.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
+<text text-anchor="start" x="194.5" y="-1626.8" font-family="Monospace" font-size="14.00"> ScarletModelData</text>
+</g>
+<!-- deblend:2&#45;&gt;deepCoadd_scarletModelData:0 -->
+<g id="edge15" class="edge">
+<title>deblend:2&#45;&gt;deepCoadd_scarletModelData:0</title>
+<path fill="none" stroke="black" stroke-width="1.5" d="M922.99,-1831C639.29,-1831 268.75,-1831 268.75,-1831 268.75,-1831 268.75,-1725.14 268.75,-1725.14"/>
+<polygon fill="black" stroke="black" stroke-width="1.5" points="274,-1725.14 268.75,-1710.14 263.5,-1725.14 274,-1725.14"/>
+</g>
+<!-- deepCoadd_deblendedCatalog:0&#45;&gt;measure:2 -->
 <g id="edge16" class="edge">
+<title>deepCoadd_deblendedCatalog:0&#45;&gt;measure:2</title>
+<path fill="none" stroke="black" stroke-width="1.5" d="M1089,-1607.86C1089,-1607.86 1089,-1553.24 1089,-1553.24"/>
+<polygon fill="black" stroke="black" stroke-width="1.5" points="1094.25,-1553.24 1089,-1538.24 1083.75,-1553.24 1094.25,-1553.24"/>
+</g>
+<!-- deepCoadd_scarletModelData:0&#45;&gt;measure:2 -->
+<g id="edge17" class="edge">
 <title>deepCoadd_scarletModelData:0&#45;&gt;measure:2</title>
 <path fill="none" stroke="black" stroke-width="1.5" d="M346.5,-1607.86C346.5,-1557.16 346.5,-1487 346.5,-1487 346.5,-1487 583.33,-1487 583.33,-1487"/>
 <polygon fill="black" stroke="black" stroke-width="1.5" points="583.33,-1492.25 598.33,-1487 583.33,-1481.75 583.33,-1492.25"/>
 </g>
 <!-- deepCoadd_scarletModelData:0&#45;&gt;forcedPhotCoadd:2 -->
-<g id="edge17" class="edge">
+<g id="edge18" class="edge">
 <title>deepCoadd_scarletModelData:0&#45;&gt;forcedPhotCoadd:2</title>
 <path fill="none" stroke="black" stroke-width="1.5" d="M188.5,-1607.83C188.5,-1607.83 188.5,-897.09 188.5,-897.09"/>
 <polygon fill="black" stroke="black" stroke-width="1.5" points="193.75,-897.09 188.5,-882.09 183.25,-897.09 193.75,-897.09"/>
-</g>
-<!-- deepCoadd_deblendedCatalog:0&#45;&gt;measure:2 -->
-<g id="edge18" class="edge">
-<title>deepCoadd_deblendedCatalog:0&#45;&gt;measure:2</title>
-<path fill="none" stroke="black" stroke-width="1.5" d="M1089,-1607.86C1089,-1607.86 1089,-1553.24 1089,-1553.24"/>
-<polygon fill="black" stroke="black" stroke-width="1.5" points="1094.25,-1553.24 1089,-1538.24 1083.75,-1553.24 1094.25,-1553.24"/>
 </g>
 <!-- deepCoadd_meas:0 -->
 <g id="node14" class="node">

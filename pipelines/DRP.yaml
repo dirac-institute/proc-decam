@@ -150,7 +150,20 @@ tasks:
       doApplySkyCorr: false # requires skyCorr input
       connections.calExpList: "injected_calexp"
       connections.backgroundList: "injected_calexpBackground"
-  
+      makePsfMatched: true
+      # These configs match obs_subaru, to facilitate 1:1 comparisons between DECam and HSC
+      matchingKernelSize: 29
+      modelPsf.defaultFwhm: 7.7
+      warpAndPsfMatch.warp.warpingKernelName: lanczos5
+      coaddPsf.warpingKernelName: lanczos5
+      # Legacy DECam config to write out warps, even if they are empty
+      doWriteEmptyWarps: true
+      python: |
+        config.warpAndPsfMatch.psfMatch.kernel['AL'].kernelSize = 29
+        config.warpAndPsfMatch.psfMatch.kernel['AL'].alardSigGauss = [1.0, 2.0, 4.5]
+        from lsst.pipe.tasks.selectImages import PsfWcsSelectImagesTask
+        config.select.retarget(PsfWcsSelectImagesTask)
+
   assembleCoadd:
     class: lsst.drp.tasks.assemble_coadd.CompareWarpAssembleCoaddTask
     config:
@@ -372,7 +385,8 @@ subsets:
     - makeVisitTable
   step3a: # patch/visit
     subset:
-    - makeWarp
+    - makeDirectWarp
+    - makePsfMatchedWarp
   step3b: # patch/band
     subset:
     - assembleCoadd # create coadd

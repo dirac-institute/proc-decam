@@ -36,11 +36,11 @@ inputs = dict(
         "{subset}/drp/raw",
     ],
     coadd=[
-        "{subset}/{coadd_subset}/coadd/warps",
+        "{subset}/{template_type}/coadd/warps",
         "skymaps",
     ],
     diff_drp=[
-        "{coadd_subset}/{template_type}/coadd", # coadds TAGGED
+        "{coadd_subset}/{template_type}/coadd", # coadds CHAINED
         "{subset}/drp", # calexp CHAINED
     ]
 )

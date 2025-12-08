@@ -26,8 +26,10 @@ def main():
     parser.add_argument("repo")
     parser.add_argument("exposures")
     parser.add_argument("--nights", default=".*")
-    parser.add_argument("--steps", nargs="+")
+    # parser.add_argument("--steps", nargs="+")
     parser.add_argument("--proc-types", nargs="+", default=["bias", "flat", "drp"])
+    parser.add_argument("--coadd-subset", default=None)
+    parser.add_argument("--template-type", default=None)
     parser.add_argument("--where")
     parser.add_argument("--log-level", default="INFO")
     parser.add_argument("--slurm", action="store_true")
@@ -69,62 +71,63 @@ def main():
     for night in nights:
         inputs = []
         for proc_type in args.proc_types:
-            cmd = [
-                "proc-decam",
-                "ingest",
-                args.exposures,
-                "-b", args.repo,
-                "--image-dir", "./data/images",
-                "--select", f"night={night} obs_type='{proc_to_obs[proc_type]}'",
-            ]
-            cmd = " ".join(map(str, cmd))
-            func = partial(run_command)
-            setattr(func, "__name__", f"ingest_{night}_{proc_type}")
-            future = bash_app(func)(cmd, inputs=inputs)
-            inputs = [future]
-            futures.append(future)
-        
-            cmd = [
-                "proc-decam",
-                "raw",
-                args.repo,
-                proc_type,
-                night
-            ]
-            cmd = " ".join(map(str, cmd))
-            func = partial(run_command)
-            setattr(func, "__name__", f"raw_{night}_{proc_type}")
-            future = bash_app(func)(cmd, inputs=inputs)
-            inputs = [future]
-            futures.append(future)
-        
-            cmd = [
-                "proc-decam",
-                "collection",
-                args.repo,
-                proc_type,
-                night
-            ]
-            cmd = " ".join(map(str, cmd))
-            func = partial(run_command)
-            setattr(func, "__name__", f"collection_{night}_{proc_type}")
-            future = bash_app(func)(cmd, inputs=inputs)
-            inputs = [future]
-            futures.append(future)
+            if proc_type in ['bias', 'flat', 'drp']:
+                cmd = [
+                    "proc-decam",
+                    "ingest",
+                    args.exposures,
+                    "-b", args.repo,
+                    "--image-dir", "./data/images",
+                    "--select", f"night={night} obs_type='{proc_to_obs[proc_type]}'",
+                ]
+                cmd = " ".join(map(str, cmd))
+                func = partial(run_command)
+                setattr(func, "__name__", f"ingest_{night}_{proc_type}")
+                future = bash_app(func)(cmd, inputs=inputs)
+                inputs = [future]
+                futures.append(future)
+            
+                cmd = [
+                    "proc-decam",
+                    "raw",
+                    args.repo,
+                    proc_type,
+                    night
+                ]
+                cmd = " ".join(map(str, cmd))
+                func = partial(run_command)
+                setattr(func, "__name__", f"raw_{night}_{proc_type}")
+                future = bash_app(func)(cmd, inputs=inputs)
+                inputs = [future]
+                futures.append(future)
+            
+                cmd = [
+                    "proc-decam",
+                    "collection",
+                    args.repo,
+                    proc_type,
+                    night
+                ]
+                cmd = " ".join(map(str, cmd))
+                func = partial(run_command)
+                setattr(func, "__name__", f"collection_{night}_{proc_type}")
+                future = bash_app(func)(cmd, inputs=inputs)
+                inputs = [future]
+                futures.append(future)
 
-            cmd = [
-                "butler",
-                "define-visits",
-                args.repo,
-                "lsst.obs.decam.DarkEnergyCamera",
-                "--collections", f"{night}/{proc_type}",
-            ]
-            cmd = " ".join(map(str, cmd))
-            func = partial(run_command)
-            setattr(func, "__name__", f"define_visits_{night}_{proc_type}")
-            future = bash_app(func)(cmd, inputs=inputs)
-            inputs = [future]
-            futures.append(future)
+                cmd = [
+                    "butler",
+                    "define-visits",
+                    args.repo,
+                    "lsst.obs.decam.DarkEnergyCamera",
+                    "--collections", f"{night}/{proc_type}",
+                ]
+                cmd = " ".join(map(str, cmd))
+                func = partial(run_command)
+                setattr(func, "__name__", f"define_visits_{night}_{proc_type}")
+                future = bash_app(func)(cmd, inputs=inputs)
+                inputs = [future]
+                futures.append(future)
 
             if proc_type == "bias":
                 steps = ["step1", "step2"]
@@ -136,10 +139,8 @@ def main():
                     night,
                     "--steps"
                 ] + steps
-                if args.pipeline_slurm:
-                    cmd += ["--slurm"]
-                if args.where:
-                    cmd += [f"--where \"{args.where}\""]
+                cmd += ["--slurm"] if args.pipeline_slurm else []
+                cmd += [f"--where \"{args.where}\""] if args.where else []
 
                 cmd = " ".join(map(str, cmd))
                 func = partial(run_command)
@@ -147,18 +148,6 @@ def main():
                 future = bash_app(func)(cmd, inputs=inputs)
                 inputs = [future]
                 futures.append(future)
-
-                # cmd = [
-                #     "butler", 
-                #     "remove-collections", 
-                #     args.repo,
-                #     f"{night}/calib/{proc_type}",
-                #     "--no-confirm",
-                # ]
-                # cmd = " ".join(map(str, cmd))
-                # future = bash_app(run_command)(cmd, inputs=inputs)
-                # inputs = [future]
-                # futures.append(future)
 
                 cmd = [
                     "proc-decam",
@@ -204,10 +193,8 @@ def main():
                     night,
                     "--steps"
                 ] + steps
-                if args.pipeline_slurm:
-                    cmd += ["--slurm"]
-                if args.where:
-                    cmd += [f"--where \"{args.where}\""]
+                cmd += ["--slurm"] if args.pipeline_slurm else []
+                cmd += [f"--where \"{args.where}\""] if args.where else []
 
                 cmd = " ".join(map(str, cmd))
                 func = partial(run_command)
@@ -250,13 +237,33 @@ def main():
                 inputs = [future]
                 futures.append(future)
 
-            else:
+            elif proc_type in ["science", "drp", "diff_drp"]:
                 if proc_type == "science":
                     steps = ["step0", "step1"]
                 elif proc_type == "drp":
                     steps = ["step0", "step1", "step2a", "step2b", "step2c", "step2d", "step2e", "step2f", "step3a"]
+                elif proc_type == "diff_drp":
+                    steps = ["step4a", "step4b", "step4c", "step4d", "step4e"]
                 else:
                     raise Exception(f"unsupported proc type {proc_type}")
+                
+                if proc_type == "diff_drp":
+                    cmd = [
+                        "proc-decam",
+                        "collection",
+                        args.repo,
+                        proc_type,
+                        night
+                    ]
+                    cmd += ["--coadd-subset", args.coadd_subset] if args.coadd_subset else []
+                    cmd += ["--template-type", args.template_type] if args.template_type else []
+                    cmd = " ".join(map(str, cmd))
+                    func = partial(run_command)
+                    setattr(func, "__name__", f"collection_{night}_{proc_type}")
+                    future = bash_app(func)(cmd, inputs=inputs)
+                    inputs = [future]
+                    futures.append(future)
+
                 cmd = [
                     "proc-decam",
                     "pipeline",
@@ -265,10 +272,10 @@ def main():
                     night,
                     "--steps", 
                 ] + steps
-                if args.pipeline_slurm:
-                    cmd += ["--slurm"]
-                if args.where:
-                    cmd += [f"--where \"{args.where}\""]
+                cmd += ["--slurm"] if args.pipeline_slurm else []
+                cmd += [f"--where \"{args.where}\""] if args.where else []
+                cmd += ["--coadd-subset", args.coadd_subset] if args.coadd_subset else []
+                cmd += ["--template-type", args.template_type] if args.template_type else []
 
                 cmd = " ".join(map(str, cmd))
                 func = partial(run_command)
@@ -276,6 +283,8 @@ def main():
                 future = bash_app(func)(cmd, inputs=inputs)
                 inputs = [future]
                 futures.append(future)
+            else:
+                raise Exception(f"unsupported proc type {proc_type}")
     
     for future in futures:
         if future:

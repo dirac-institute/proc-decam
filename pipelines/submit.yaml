@@ -17,6 +17,6 @@ subDirTemplate: '{label}/{tract}/{patch}/{band}/{subfilter}/{physical_filter}/{v
 site:
   local:
     class: proc_decam.parsl.sites.Local
-    cores: 24
+    cores: 64
     monitorEnable: true # enable the MonitoringHub
     strategy: simple

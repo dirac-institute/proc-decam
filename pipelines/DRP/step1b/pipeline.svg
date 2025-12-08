@@ -5,320 +5,320 @@
  -->
 <!-- Title: Pipeline Pages: 1 -->
 <svg width="2135pt" height="1142pt"
- viewBox="0.00 0.00 2134.50 1142.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ viewBox="0.00 0.00 2135.00 1142.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 1138)">
 <title>Pipeline</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-1138 2130.5,-1138 2130.5,4 -4,4"/>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-1138 2131,-1138 2131,4 -4,4"/>
 <!-- isr:2 -->
 <g id="node1" class="node">
 <title>isr:2</title>
-<polygon fill="#b1f2ef" stroke="black" stroke-width="3" points="1134.5,-946 827.5,-946 827.5,-844 1134.5,-844 1134.5,-946"/>
-<text text-anchor="start" x="849" y="-918.6" font-family="Monospace" font-weight="bold" font-size="18.00">isr</text>
-<text text-anchor="start" x="849" y="-888.8" font-family="Monospace" font-size="14.00">lsst.ip.isr.isrTask.IsrTask</text>
-<text text-anchor="start" x="849" y="-862.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
-<text text-anchor="start" x="940" y="-862.8" font-family="Monospace" font-size="14.00"> {detector, exposure}</text>
+<polygon fill="#b1f2ef" stroke="black" stroke-width="3" points="1147,-946 840,-946 840,-844 1147,-844 1147,-946"/>
+<text text-anchor="start" x="861.5" y="-918.6" font-family="Monospace" font-weight="bold" font-size="18.00">isr</text>
+<text text-anchor="start" x="861.5" y="-888.8" font-family="Monospace" font-size="14.00">lsst.ip.isr.isrTask.IsrTask</text>
+<text text-anchor="start" x="861.5" y="-862.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
+<text text-anchor="start" x="952.5" y="-862.8" font-family="Monospace" font-size="14.00"> {detector, exposure}</text>
 </g>
 <!-- postISRCCD:0 -->
 <g id="node7" class="node">
 <title>postISRCCD:0</title>
-<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M1122.5,-790C1122.5,-790 839.5,-790 839.5,-790 833.5,-790 827.5,-784 827.5,-778 827.5,-778 827.5,-700 827.5,-700 827.5,-694 833.5,-688 839.5,-688 839.5,-688 1122.5,-688 1122.5,-688 1128.5,-688 1134.5,-694 1134.5,-700 1134.5,-700 1134.5,-778 1134.5,-778 1134.5,-784 1128.5,-790 1122.5,-790"/>
-<text text-anchor="start" x="849" y="-762.6" font-family="Monospace" font-weight="bold" font-size="18.00">postISRCCD</text>
-<text text-anchor="start" x="849" y="-733.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
-<text text-anchor="start" x="940" y="-733.8" font-family="Monospace" font-size="14.00"> {detector, exposure}</text>
-<text text-anchor="start" x="849" y="-706.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
-<text text-anchor="start" x="965" y="-706.8" font-family="Monospace" font-size="14.00"> Exposure</text>
+<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M1135,-790C1135,-790 852,-790 852,-790 846,-790 840,-784 840,-778 840,-778 840,-700 840,-700 840,-694 846,-688 852,-688 852,-688 1135,-688 1135,-688 1141,-688 1147,-694 1147,-700 1147,-700 1147,-778 1147,-778 1147,-784 1141,-790 1135,-790"/>
+<text text-anchor="start" x="861.5" y="-762.6" font-family="Monospace" font-weight="bold" font-size="18.00">postISRCCD</text>
+<text text-anchor="start" x="861.5" y="-733.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
+<text text-anchor="start" x="952.5" y="-733.8" font-family="Monospace" font-size="14.00"> {detector, exposure}</text>
+<text text-anchor="start" x="861.5" y="-706.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
+<text text-anchor="start" x="977.5" y="-706.8" font-family="Monospace" font-size="14.00"> Exposure</text>
 </g>
 <!-- isr:2&#45;&gt;postISRCCD:0 -->
 <g id="edge1" class="edge">
 <title>isr:2&#45;&gt;postISRCCD:0</title>
-<path fill="none" stroke="black" stroke-width="1.5" d="M981,-843.92C981,-843.92 981,-805.19 981,-805.19"/>
-<polygon fill="black" stroke="black" stroke-width="1.5" points="986.25,-805.19 981,-790.19 975.75,-805.2 986.25,-805.19"/>
-</g>
-<!-- crosstalk:0 -->
-<g id="node2" class="node">
-<title>crosstalk:0</title>
-<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M270,-1118C270,-1118 12,-1118 12,-1118 6,-1118 0,-1112 0,-1106 0,-1106 0,-1028 0,-1028 0,-1022 6,-1016 12,-1016 12,-1016 270,-1016 270,-1016 276,-1016 282,-1022 282,-1028 282,-1028 282,-1106 282,-1106 282,-1112 276,-1118 270,-1118"/>
-<text text-anchor="start" x="21" y="-1090.6" font-family="Monospace" font-weight="bold" font-size="18.00">crosstalk</text>
-<text text-anchor="start" x="21" y="-1061.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
-<text text-anchor="start" x="112" y="-1061.8" font-family="Monospace" font-size="14.00"> {detector}</text>
-<text text-anchor="start" x="21" y="-1034.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
-<text text-anchor="start" x="137" y="-1034.8" font-family="Monospace" font-size="14.00"> CrosstalkCalib</text>
-</g>
-<!-- crosstalk:0&#45;&gt;isr:2 -->
-<g id="edge2" class="edge">
-<title>crosstalk:0&#45;&gt;isr:2</title>
-<path fill="none" stroke="black" stroke-width="1.5" stroke-dasharray="5,2" d="M247,-1015.85C247,-959.88 247,-878 247,-878 247,-878 812.13,-878 812.13,-878"/>
-<polygon fill="black" stroke="black" stroke-width="1.5" points="812.13,-883.25 827.13,-878 812.13,-872.75 812.13,-883.25"/>
-</g>
-<!-- camera:0 -->
-<g id="node3" class="node">
-<title>camera:0</title>
-<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M547.5,-1118C547.5,-1118 330.5,-1118 330.5,-1118 324.5,-1118 318.5,-1112 318.5,-1106 318.5,-1106 318.5,-1028 318.5,-1028 318.5,-1022 324.5,-1016 330.5,-1016 330.5,-1016 547.5,-1016 547.5,-1016 553.5,-1016 559.5,-1022 559.5,-1028 559.5,-1028 559.5,-1106 559.5,-1106 559.5,-1112 553.5,-1118 547.5,-1118"/>
-<text text-anchor="start" x="340" y="-1090.6" font-family="Monospace" font-weight="bold" font-size="18.00">camera</text>
-<text text-anchor="start" x="340" y="-1061.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
-<text text-anchor="start" x="431" y="-1061.8" font-family="Monospace" font-size="14.00"> {instrument}</text>
-<text text-anchor="start" x="340" y="-1034.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
-<text text-anchor="start" x="456" y="-1034.8" font-family="Monospace" font-size="14.00"> Camera</text>
-</g>
-<!-- camera:0&#45;&gt;isr:2 -->
-<g id="edge3" class="edge">
-<title>camera:0&#45;&gt;isr:2</title>
-<path fill="none" stroke="black" stroke-width="1.5" stroke-dasharray="5,2" d="M540.75,-1015.82C540.75,-970.67 540.75,-912 540.75,-912 540.75,-912 812.33,-912 812.33,-912"/>
-<polygon fill="black" stroke="black" stroke-width="1.5" points="812.33,-917.25 827.33,-912 812.33,-906.75 812.33,-917.25"/>
-</g>
-<!-- defects:0 -->
-<g id="node4" class="node">
-<title>defects:0</title>
-<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M808.5,-1118C808.5,-1118 607.5,-1118 607.5,-1118 601.5,-1118 595.5,-1112 595.5,-1106 595.5,-1106 595.5,-1028 595.5,-1028 595.5,-1022 601.5,-1016 607.5,-1016 607.5,-1016 808.5,-1016 808.5,-1016 814.5,-1016 820.5,-1022 820.5,-1028 820.5,-1028 820.5,-1106 820.5,-1106 820.5,-1112 814.5,-1118 808.5,-1118"/>
-<text text-anchor="start" x="617" y="-1090.6" font-family="Monospace" font-weight="bold" font-size="18.00">defects</text>
-<text text-anchor="start" x="617" y="-1061.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
-<text text-anchor="start" x="708" y="-1061.8" font-family="Monospace" font-size="14.00"> {detector}</text>
-<text text-anchor="start" x="617" y="-1034.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
-<text text-anchor="start" x="733" y="-1034.8" font-family="Monospace" font-size="14.00"> Defects</text>
-</g>
-<!-- defects:0&#45;&gt;isr:2 -->
-<g id="edge4" class="edge">
-<title>defects:0&#45;&gt;isr:2</title>
-<path fill="none" stroke="black" stroke-width="1.5" stroke-dasharray="5,2" d="M820.77,-1067C833.49,-1067 842,-1067 842,-1067 842,-1067 842,-961.14 842,-961.14"/>
-<polygon fill="black" stroke="black" stroke-width="1.5" points="847.25,-961.14 842,-946.14 836.75,-961.14 847.25,-961.14"/>
+<path fill="none" stroke="black" stroke-width="1.5" d="M993.5,-843.92C993.5,-843.92 993.5,-805.19 993.5,-805.19"/>
+<polygon fill="black" stroke="black" stroke-width="1.5" points="998.75,-805.19 993.5,-790.19 988.25,-805.2 998.75,-805.19"/>
 </g>
 <!-- linearizer:0 -->
-<g id="node5" class="node">
+<g id="node2" class="node">
 <title>linearizer:0</title>
-<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M1093.5,-1118C1093.5,-1118 868.5,-1118 868.5,-1118 862.5,-1118 856.5,-1112 856.5,-1106 856.5,-1106 856.5,-1028 856.5,-1028 856.5,-1022 862.5,-1016 868.5,-1016 868.5,-1016 1093.5,-1016 1093.5,-1016 1099.5,-1016 1105.5,-1022 1105.5,-1028 1105.5,-1028 1105.5,-1106 1105.5,-1106 1105.5,-1112 1099.5,-1118 1093.5,-1118"/>
-<text text-anchor="start" x="878" y="-1090.6" font-family="Monospace" font-weight="bold" font-size="18.00">linearizer</text>
-<text text-anchor="start" x="878" y="-1061.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
-<text text-anchor="start" x="969" y="-1061.8" font-family="Monospace" font-size="14.00"> {detector}</text>
-<text text-anchor="start" x="878" y="-1034.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
-<text text-anchor="start" x="994" y="-1034.8" font-family="Monospace" font-size="14.00"> Linearizer</text>
+<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M237,-1118C237,-1118 12,-1118 12,-1118 6,-1118 0,-1112 0,-1106 0,-1106 0,-1028 0,-1028 0,-1022 6,-1016 12,-1016 12,-1016 237,-1016 237,-1016 243,-1016 249,-1022 249,-1028 249,-1028 249,-1106 249,-1106 249,-1112 243,-1118 237,-1118"/>
+<text text-anchor="start" x="21.5" y="-1090.6" font-family="Monospace" font-weight="bold" font-size="18.00">linearizer</text>
+<text text-anchor="start" x="21.5" y="-1061.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
+<text text-anchor="start" x="112.5" y="-1061.8" font-family="Monospace" font-size="14.00"> {detector}</text>
+<text text-anchor="start" x="21.5" y="-1034.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
+<text text-anchor="start" x="137.5" y="-1034.8" font-family="Monospace" font-size="14.00"> Linearizer</text>
 </g>
 <!-- linearizer:0&#45;&gt;isr:2 -->
-<g id="edge5" class="edge">
+<g id="edge2" class="edge">
 <title>linearizer:0&#45;&gt;isr:2</title>
-<path fill="none" stroke="black" stroke-width="1.5" stroke-dasharray="5,2" d="M981,-1015.86C981,-1015.86 981,-961.24 981,-961.24"/>
-<polygon fill="black" stroke="black" stroke-width="1.5" points="986.25,-961.24 981,-946.24 975.75,-961.24 986.25,-961.24"/>
+<path fill="none" stroke="black" stroke-width="1.5" stroke-dasharray="5,2" d="M236.75,-1015.85C236.75,-959.88 236.75,-878 236.75,-878 236.75,-878 824.9,-878 824.9,-878"/>
+<polygon fill="black" stroke="black" stroke-width="1.5" points="824.9,-883.25 839.9,-878 824.9,-872.75 824.9,-883.25"/>
 </g>
 <!-- bias:0 -->
-<g id="node6" class="node">
+<g id="node3" class="node">
 <title>bias:0</title>
-<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M1370.5,-1118C1370.5,-1118 1153.5,-1118 1153.5,-1118 1147.5,-1118 1141.5,-1112 1141.5,-1106 1141.5,-1106 1141.5,-1028 1141.5,-1028 1141.5,-1022 1147.5,-1016 1153.5,-1016 1153.5,-1016 1370.5,-1016 1370.5,-1016 1376.5,-1016 1382.5,-1022 1382.5,-1028 1382.5,-1028 1382.5,-1106 1382.5,-1106 1382.5,-1112 1376.5,-1118 1370.5,-1118"/>
-<text text-anchor="start" x="1163" y="-1090.6" font-family="Monospace" font-weight="bold" font-size="18.00">bias</text>
-<text text-anchor="start" x="1163" y="-1061.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
-<text text-anchor="start" x="1254" y="-1061.8" font-family="Monospace" font-size="14.00"> {detector}</text>
-<text text-anchor="start" x="1163" y="-1034.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
-<text text-anchor="start" x="1279" y="-1034.8" font-family="Monospace" font-size="14.00"> ExposureF</text>
+<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M514,-1118C514,-1118 297,-1118 297,-1118 291,-1118 285,-1112 285,-1106 285,-1106 285,-1028 285,-1028 285,-1022 291,-1016 297,-1016 297,-1016 514,-1016 514,-1016 520,-1016 526,-1022 526,-1028 526,-1028 526,-1106 526,-1106 526,-1112 520,-1118 514,-1118"/>
+<text text-anchor="start" x="306.5" y="-1090.6" font-family="Monospace" font-weight="bold" font-size="18.00">bias</text>
+<text text-anchor="start" x="306.5" y="-1061.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
+<text text-anchor="start" x="397.5" y="-1061.8" font-family="Monospace" font-size="14.00"> {detector}</text>
+<text text-anchor="start" x="306.5" y="-1034.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
+<text text-anchor="start" x="422.5" y="-1034.8" font-family="Monospace" font-size="14.00"> ExposureF</text>
 </g>
 <!-- bias:0&#45;&gt;isr:2 -->
-<g id="edge6" class="edge">
+<g id="edge3" class="edge">
 <title>bias:0&#45;&gt;isr:2</title>
-<path fill="none" stroke="black" stroke-width="1.5" stroke-dasharray="5,2" d="M1141.42,-1067C1125.83,-1067 1115.17,-1067 1115.17,-1067 1115.17,-1067 1115.17,-961.14 1115.17,-961.14"/>
-<polygon fill="black" stroke="black" stroke-width="1.5" points="1120.42,-961.14 1115.17,-946.14 1109.92,-961.14 1120.42,-961.14"/>
+<path fill="none" stroke="black" stroke-width="1.5" stroke-dasharray="5,2" d="M512.25,-1015.82C512.25,-970.67 512.25,-912 512.25,-912 512.25,-912 824.91,-912 824.91,-912"/>
+<polygon fill="black" stroke="black" stroke-width="1.5" points="824.91,-917.25 839.91,-912 824.91,-906.75 824.91,-917.25"/>
+</g>
+<!-- crosstalk:0 -->
+<g id="node4" class="node">
+<title>crosstalk:0</title>
+<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M832.5,-1118C832.5,-1118 574.5,-1118 574.5,-1118 568.5,-1118 562.5,-1112 562.5,-1106 562.5,-1106 562.5,-1028 562.5,-1028 562.5,-1022 568.5,-1016 574.5,-1016 574.5,-1016 832.5,-1016 832.5,-1016 838.5,-1016 844.5,-1022 844.5,-1028 844.5,-1028 844.5,-1106 844.5,-1106 844.5,-1112 838.5,-1118 832.5,-1118"/>
+<text text-anchor="start" x="583.5" y="-1090.6" font-family="Monospace" font-weight="bold" font-size="18.00">crosstalk</text>
+<text text-anchor="start" x="583.5" y="-1061.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
+<text text-anchor="start" x="674.5" y="-1061.8" font-family="Monospace" font-size="14.00"> {detector}</text>
+<text text-anchor="start" x="583.5" y="-1034.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
+<text text-anchor="start" x="699.5" y="-1034.8" font-family="Monospace" font-size="14.00"> CrosstalkCalib</text>
+</g>
+<!-- crosstalk:0&#45;&gt;isr:2 -->
+<g id="edge4" class="edge">
+<title>crosstalk:0&#45;&gt;isr:2</title>
+<path fill="none" stroke="black" stroke-width="1.5" stroke-dasharray="5,2" d="M844.79,-1067C855.79,-1067 862.75,-1067 862.75,-1067 862.75,-1067 862.75,-961.14 862.75,-961.14"/>
+<polygon fill="black" stroke="black" stroke-width="1.5" points="868,-961.14 862.75,-946.14 857.5,-961.14 868,-961.14"/>
+</g>
+<!-- defects:0 -->
+<g id="node5" class="node">
+<title>defects:0</title>
+<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M1094,-1118C1094,-1118 893,-1118 893,-1118 887,-1118 881,-1112 881,-1106 881,-1106 881,-1028 881,-1028 881,-1022 887,-1016 893,-1016 893,-1016 1094,-1016 1094,-1016 1100,-1016 1106,-1022 1106,-1028 1106,-1028 1106,-1106 1106,-1106 1106,-1112 1100,-1118 1094,-1118"/>
+<text text-anchor="start" x="902.5" y="-1090.6" font-family="Monospace" font-weight="bold" font-size="18.00">defects</text>
+<text text-anchor="start" x="902.5" y="-1061.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
+<text text-anchor="start" x="993.5" y="-1061.8" font-family="Monospace" font-size="14.00"> {detector}</text>
+<text text-anchor="start" x="902.5" y="-1034.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
+<text text-anchor="start" x="1018.5" y="-1034.8" font-family="Monospace" font-size="14.00"> Defects</text>
+</g>
+<!-- defects:0&#45;&gt;isr:2 -->
+<g id="edge5" class="edge">
+<title>defects:0&#45;&gt;isr:2</title>
+<path fill="none" stroke="black" stroke-width="1.5" stroke-dasharray="5,2" d="M993.5,-1015.86C993.5,-1015.86 993.5,-961.24 993.5,-961.24"/>
+<polygon fill="black" stroke="black" stroke-width="1.5" points="998.75,-961.24 993.5,-946.24 988.25,-961.24 998.75,-961.24"/>
+</g>
+<!-- camera:0 -->
+<g id="node6" class="node">
+<title>camera:0</title>
+<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M1371,-1118C1371,-1118 1154,-1118 1154,-1118 1148,-1118 1142,-1112 1142,-1106 1142,-1106 1142,-1028 1142,-1028 1142,-1022 1148,-1016 1154,-1016 1154,-1016 1371,-1016 1371,-1016 1377,-1016 1383,-1022 1383,-1028 1383,-1028 1383,-1106 1383,-1106 1383,-1112 1377,-1118 1371,-1118"/>
+<text text-anchor="start" x="1163.5" y="-1090.6" font-family="Monospace" font-weight="bold" font-size="18.00">camera</text>
+<text text-anchor="start" x="1163.5" y="-1061.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
+<text text-anchor="start" x="1254.5" y="-1061.8" font-family="Monospace" font-size="14.00"> {instrument}</text>
+<text text-anchor="start" x="1163.5" y="-1034.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
+<text text-anchor="start" x="1279.5" y="-1034.8" font-family="Monospace" font-size="14.00"> Camera</text>
+</g>
+<!-- camera:0&#45;&gt;isr:2 -->
+<g id="edge6" class="edge">
+<title>camera:0&#45;&gt;isr:2</title>
+<path fill="none" stroke="black" stroke-width="1.5" stroke-dasharray="5,2" d="M1141.86,-1067C1127.6,-1067 1118,-1067 1118,-1067 1118,-1067 1118,-961.14 1118,-961.14"/>
+<polygon fill="black" stroke="black" stroke-width="1.5" points="1123.25,-961.14 1118,-946.14 1112.75,-961.14 1123.25,-961.14"/>
 </g>
 <!-- characterizeImage:2 -->
 <g id="node8" class="node">
 <title>characterizeImage:2</title>
-<polygon fill="#b1f2ef" stroke="black" stroke-width="3" points="1229,-634 733,-634 733,-532 1229,-532 1229,-634"/>
-<text text-anchor="start" x="754" y="-606.6" font-family="Monospace" font-weight="bold" font-size="18.00">characterizeImage</text>
-<text text-anchor="start" x="754" y="-576.8" font-family="Monospace" font-size="14.00">lsst.pipe.tasks.characterizeImage.CharacterizeImageTask</text>
-<text text-anchor="start" x="754" y="-550.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
-<text text-anchor="start" x="845" y="-550.8" font-family="Monospace" font-size="14.00"> {detector, visit}</text>
+<polygon fill="#b1f2ef" stroke="black" stroke-width="3" points="1241.5,-634 745.5,-634 745.5,-532 1241.5,-532 1241.5,-634"/>
+<text text-anchor="start" x="766.5" y="-606.6" font-family="Monospace" font-weight="bold" font-size="18.00">characterizeImage</text>
+<text text-anchor="start" x="766.5" y="-576.8" font-family="Monospace" font-size="14.00">lsst.pipe.tasks.characterizeImage.CharacterizeImageTask</text>
+<text text-anchor="start" x="766.5" y="-550.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
+<text text-anchor="start" x="857.5" y="-550.8" font-family="Monospace" font-size="14.00"> {detector, visit}</text>
 </g>
 <!-- postISRCCD:0&#45;&gt;characterizeImage:2 -->
 <g id="edge7" class="edge">
 <title>postISRCCD:0&#45;&gt;characterizeImage:2</title>
-<path fill="none" stroke="black" stroke-width="1.5" d="M981,-687.92C981,-687.92 981,-649.19 981,-649.19"/>
-<polygon fill="black" stroke="black" stroke-width="1.5" points="986.25,-649.19 981,-634.19 975.75,-649.2 986.25,-649.19"/>
-</g>
-<!-- icExp:0 -->
-<g id="node9" class="node">
-<title>icExp:0</title>
-<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M792,-462C792,-462 534,-462 534,-462 528,-462 522,-456 522,-450 522,-450 522,-372 522,-372 522,-366 528,-360 534,-360 534,-360 792,-360 792,-360 798,-360 804,-366 804,-372 804,-372 804,-450 804,-450 804,-456 798,-462 792,-462"/>
-<text text-anchor="start" x="543" y="-434.6" font-family="Monospace" font-weight="bold" font-size="18.00">icExp</text>
-<text text-anchor="start" x="543" y="-405.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
-<text text-anchor="start" x="634" y="-405.8" font-family="Monospace" font-size="14.00"> {detector, visit}</text>
-<text text-anchor="start" x="543" y="-378.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
-<text text-anchor="start" x="659" y="-378.8" font-family="Monospace" font-size="14.00"> ExposureF</text>
-</g>
-<!-- characterizeImage:2&#45;&gt;icExp:0 -->
-<g id="edge8" class="edge">
-<title>characterizeImage:2&#45;&gt;icExp:0</title>
-<path fill="none" stroke="black" stroke-width="1.5" d="M768.5,-531.86C768.5,-531.86 768.5,-477.24 768.5,-477.24"/>
-<polygon fill="black" stroke="black" stroke-width="1.5" points="773.75,-477.24 768.5,-462.24 763.25,-477.24 773.75,-477.24"/>
-</g>
-<!-- icSrc:0 -->
-<g id="node10" class="node">
-<title>icSrc:0</title>
-<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M1110,-462C1110,-462 852,-462 852,-462 846,-462 840,-456 840,-450 840,-450 840,-372 840,-372 840,-366 846,-360 852,-360 852,-360 1110,-360 1110,-360 1116,-360 1122,-366 1122,-372 1122,-372 1122,-450 1122,-450 1122,-456 1116,-462 1110,-462"/>
-<text text-anchor="start" x="861" y="-434.6" font-family="Monospace" font-weight="bold" font-size="18.00">icSrc</text>
-<text text-anchor="start" x="861" y="-405.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
-<text text-anchor="start" x="952" y="-405.8" font-family="Monospace" font-size="14.00"> {detector, visit}</text>
-<text text-anchor="start" x="861" y="-378.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
-<text text-anchor="start" x="977" y="-378.8" font-family="Monospace" font-size="14.00"> SourceCatalog</text>
-</g>
-<!-- characterizeImage:2&#45;&gt;icSrc:0 -->
-<g id="edge9" class="edge">
-<title>characterizeImage:2&#45;&gt;icSrc:0</title>
-<path fill="none" stroke="black" stroke-width="1.5" d="M981,-531.86C981,-531.86 981,-477.24 981,-477.24"/>
-<polygon fill="black" stroke="black" stroke-width="1.5" points="986.25,-477.24 981,-462.24 975.75,-477.24 986.25,-477.24"/>
+<path fill="none" stroke="black" stroke-width="1.5" d="M993.5,-687.92C993.5,-687.92 993.5,-649.19 993.5,-649.19"/>
+<polygon fill="black" stroke="black" stroke-width="1.5" points="998.75,-649.19 993.5,-634.19 988.25,-649.2 998.75,-649.19"/>
 </g>
 <!-- icExpBackground:0 -->
-<g id="node11" class="node">
+<g id="node9" class="node">
 <title>icExpBackground:0</title>
-<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M1428,-462C1428,-462 1170,-462 1170,-462 1164,-462 1158,-456 1158,-450 1158,-450 1158,-372 1158,-372 1158,-366 1164,-360 1170,-360 1170,-360 1428,-360 1428,-360 1434,-360 1440,-366 1440,-372 1440,-372 1440,-450 1440,-450 1440,-456 1434,-462 1428,-462"/>
-<text text-anchor="start" x="1179" y="-434.6" font-family="Monospace" font-weight="bold" font-size="18.00">icExpBackground</text>
-<text text-anchor="start" x="1179" y="-405.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
-<text text-anchor="start" x="1270" y="-405.8" font-family="Monospace" font-size="14.00"> {detector, visit}</text>
-<text text-anchor="start" x="1179" y="-378.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
-<text text-anchor="start" x="1295" y="-378.8" font-family="Monospace" font-size="14.00"> Background</text>
+<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M804.5,-462C804.5,-462 546.5,-462 546.5,-462 540.5,-462 534.5,-456 534.5,-450 534.5,-450 534.5,-372 534.5,-372 534.5,-366 540.5,-360 546.5,-360 546.5,-360 804.5,-360 804.5,-360 810.5,-360 816.5,-366 816.5,-372 816.5,-372 816.5,-450 816.5,-450 816.5,-456 810.5,-462 804.5,-462"/>
+<text text-anchor="start" x="555.5" y="-434.6" font-family="Monospace" font-weight="bold" font-size="18.00">icExpBackground</text>
+<text text-anchor="start" x="555.5" y="-405.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
+<text text-anchor="start" x="646.5" y="-405.8" font-family="Monospace" font-size="14.00"> {detector, visit}</text>
+<text text-anchor="start" x="555.5" y="-378.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
+<text text-anchor="start" x="671.5" y="-378.8" font-family="Monospace" font-size="14.00"> Background</text>
 </g>
 <!-- characterizeImage:2&#45;&gt;icExpBackground:0 -->
-<g id="edge10" class="edge">
+<g id="edge8" class="edge">
 <title>characterizeImage:2&#45;&gt;icExpBackground:0</title>
-<path fill="none" stroke="black" stroke-width="1.5" d="M1193.5,-531.86C1193.5,-531.86 1193.5,-477.24 1193.5,-477.24"/>
-<polygon fill="black" stroke="black" stroke-width="1.5" points="1198.75,-477.24 1193.5,-462.24 1188.25,-477.24 1198.75,-477.24"/>
+<path fill="none" stroke="black" stroke-width="1.5" d="M781,-531.86C781,-531.86 781,-477.24 781,-477.24"/>
+<polygon fill="black" stroke="black" stroke-width="1.5" points="786.25,-477.24 781,-462.24 775.75,-477.24 786.25,-477.24"/>
+</g>
+<!-- icExp:0 -->
+<g id="node10" class="node">
+<title>icExp:0</title>
+<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M1122.5,-462C1122.5,-462 864.5,-462 864.5,-462 858.5,-462 852.5,-456 852.5,-450 852.5,-450 852.5,-372 852.5,-372 852.5,-366 858.5,-360 864.5,-360 864.5,-360 1122.5,-360 1122.5,-360 1128.5,-360 1134.5,-366 1134.5,-372 1134.5,-372 1134.5,-450 1134.5,-450 1134.5,-456 1128.5,-462 1122.5,-462"/>
+<text text-anchor="start" x="873.5" y="-434.6" font-family="Monospace" font-weight="bold" font-size="18.00">icExp</text>
+<text text-anchor="start" x="873.5" y="-405.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
+<text text-anchor="start" x="964.5" y="-405.8" font-family="Monospace" font-size="14.00"> {detector, visit}</text>
+<text text-anchor="start" x="873.5" y="-378.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
+<text text-anchor="start" x="989.5" y="-378.8" font-family="Monospace" font-size="14.00"> ExposureF</text>
+</g>
+<!-- characterizeImage:2&#45;&gt;icExp:0 -->
+<g id="edge9" class="edge">
+<title>characterizeImage:2&#45;&gt;icExp:0</title>
+<path fill="none" stroke="black" stroke-width="1.5" d="M993.5,-531.86C993.5,-531.86 993.5,-477.24 993.5,-477.24"/>
+<polygon fill="black" stroke="black" stroke-width="1.5" points="998.75,-477.24 993.5,-462.24 988.25,-477.24 998.75,-477.24"/>
+</g>
+<!-- icSrc:0 -->
+<g id="node11" class="node">
+<title>icSrc:0</title>
+<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M1440.5,-462C1440.5,-462 1182.5,-462 1182.5,-462 1176.5,-462 1170.5,-456 1170.5,-450 1170.5,-450 1170.5,-372 1170.5,-372 1170.5,-366 1176.5,-360 1182.5,-360 1182.5,-360 1440.5,-360 1440.5,-360 1446.5,-360 1452.5,-366 1452.5,-372 1452.5,-372 1452.5,-450 1452.5,-450 1452.5,-456 1446.5,-462 1440.5,-462"/>
+<text text-anchor="start" x="1191.5" y="-434.6" font-family="Monospace" font-weight="bold" font-size="18.00">icSrc</text>
+<text text-anchor="start" x="1191.5" y="-405.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
+<text text-anchor="start" x="1282.5" y="-405.8" font-family="Monospace" font-size="14.00"> {detector, visit}</text>
+<text text-anchor="start" x="1191.5" y="-378.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
+<text text-anchor="start" x="1307.5" y="-378.8" font-family="Monospace" font-size="14.00"> SourceCatalog</text>
+</g>
+<!-- characterizeImage:2&#45;&gt;icSrc:0 -->
+<g id="edge10" class="edge">
+<title>characterizeImage:2&#45;&gt;icSrc:0</title>
+<path fill="none" stroke="black" stroke-width="1.5" d="M1206,-531.86C1206,-531.86 1206,-477.24 1206,-477.24"/>
+<polygon fill="black" stroke="black" stroke-width="1.5" points="1211.25,-477.24 1206,-462.24 1200.75,-477.24 1211.25,-477.24"/>
 </g>
 <!-- calibrate:2 -->
 <g id="node12" class="node">
 <title>calibrate:2</title>
-<polygon fill="#b1f2ef" stroke="black" stroke-width="3" points="1004,-290 640,-290 640,-188 1004,-188 1004,-290"/>
-<text text-anchor="start" x="661" y="-262.6" font-family="Monospace" font-weight="bold" font-size="18.00">calibrate</text>
-<text text-anchor="start" x="661" y="-232.8" font-family="Monospace" font-size="14.00">lsst.pipe.tasks.calibrate.CalibrateTask</text>
-<text text-anchor="start" x="661" y="-206.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
-<text text-anchor="start" x="752" y="-206.8" font-family="Monospace" font-size="14.00"> {detector, visit}</text>
-</g>
-<!-- icExp:0&#45;&gt;calibrate:2 -->
-<g id="edge11" class="edge">
-<title>icExp:0&#45;&gt;calibrate:2</title>
-<path fill="none" stroke="black" stroke-width="1.5" d="M749.33,-359.86C749.33,-359.86 749.33,-305.24 749.33,-305.24"/>
-<polygon fill="black" stroke="black" stroke-width="1.5" points="754.58,-305.24 749.33,-290.24 744.08,-305.24 754.58,-305.24"/>
-</g>
-<!-- icSrc:0&#45;&gt;calibrate:2 -->
-<g id="edge12" class="edge">
-<title>icSrc:0&#45;&gt;calibrate:2</title>
-<path fill="none" stroke="black" stroke-width="1.5" d="M922,-359.86C922,-359.86 922,-305.24 922,-305.24"/>
-<polygon fill="black" stroke="black" stroke-width="1.5" points="927.25,-305.24 922,-290.24 916.75,-305.24 927.25,-305.24"/>
+<polygon fill="#b1f2ef" stroke="black" stroke-width="3" points="1016.5,-290 652.5,-290 652.5,-188 1016.5,-188 1016.5,-290"/>
+<text text-anchor="start" x="673.5" y="-262.6" font-family="Monospace" font-weight="bold" font-size="18.00">calibrate</text>
+<text text-anchor="start" x="673.5" y="-232.8" font-family="Monospace" font-size="14.00">lsst.pipe.tasks.calibrate.CalibrateTask</text>
+<text text-anchor="start" x="673.5" y="-206.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
+<text text-anchor="start" x="764.5" y="-206.8" font-family="Monospace" font-size="14.00"> {detector, visit}</text>
 </g>
 <!-- icExpBackground:0&#45;&gt;calibrate:2 -->
-<g id="edge13" class="edge">
+<g id="edge11" class="edge">
 <title>icExpBackground:0&#45;&gt;calibrate:2</title>
-<path fill="none" stroke="black" stroke-width="1.5" d="M1299,-359.86C1299,-309.16 1299,-239 1299,-239 1299,-239 1019.03,-239 1019.03,-239"/>
-<polygon fill="black" stroke="black" stroke-width="1.5" points="1019.03,-233.75 1004.03,-239 1019.03,-244.25 1019.03,-233.75"/>
+<path fill="none" stroke="black" stroke-width="1.5" d="M761.83,-359.86C761.83,-359.86 761.83,-305.24 761.83,-305.24"/>
+<polygon fill="black" stroke="black" stroke-width="1.5" points="767.08,-305.24 761.83,-290.24 756.58,-305.24 767.08,-305.24"/>
 </g>
-<!-- src:0 -->
-<g id="node13" class="node">
-<title>src:0</title>
-<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M474,-118C474,-118 216,-118 216,-118 210,-118 204,-112 204,-106 204,-106 204,-28 204,-28 204,-22 210,-16 216,-16 216,-16 474,-16 474,-16 480,-16 486,-22 486,-28 486,-28 486,-106 486,-106 486,-112 480,-118 474,-118"/>
-<text text-anchor="start" x="225" y="-90.6" font-family="Monospace" font-weight="bold" font-size="18.00">src</text>
-<text text-anchor="start" x="225" y="-61.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
-<text text-anchor="start" x="316" y="-61.8" font-family="Monospace" font-size="14.00"> {detector, visit}</text>
-<text text-anchor="start" x="225" y="-34.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
-<text text-anchor="start" x="341" y="-34.8" font-family="Monospace" font-size="14.00"> SourceCatalog</text>
+<!-- icExp:0&#45;&gt;calibrate:2 -->
+<g id="edge12" class="edge">
+<title>icExp:0&#45;&gt;calibrate:2</title>
+<path fill="none" stroke="black" stroke-width="1.5" d="M934.5,-359.86C934.5,-359.86 934.5,-305.24 934.5,-305.24"/>
+<polygon fill="black" stroke="black" stroke-width="1.5" points="939.75,-305.24 934.5,-290.24 929.25,-305.24 939.75,-305.24"/>
 </g>
-<!-- calibrate:2&#45;&gt;src:0 -->
-<g id="edge14" class="edge">
-<title>calibrate:2&#45;&gt;src:0</title>
-<path fill="none" stroke="black" stroke-width="1.5" d="M639.8,-239C506.56,-239 349,-239 349,-239 349,-239 349,-133.14 349,-133.14"/>
-<polygon fill="black" stroke="black" stroke-width="1.5" points="354.25,-133.14 349,-118.14 343.75,-133.14 354.25,-133.14"/>
+<!-- icSrc:0&#45;&gt;calibrate:2 -->
+<g id="edge13" class="edge">
+<title>icSrc:0&#45;&gt;calibrate:2</title>
+<path fill="none" stroke="black" stroke-width="1.5" d="M1311.5,-359.86C1311.5,-309.16 1311.5,-239 1311.5,-239 1311.5,-239 1031.53,-239 1031.53,-239"/>
+<polygon fill="black" stroke="black" stroke-width="1.5" points="1031.53,-233.75 1016.53,-239 1031.53,-244.25 1031.53,-233.75"/>
 </g>
 <!-- calexp:0 -->
-<g id="node14" class="node">
+<g id="node13" class="node">
 <title>calexp:0</title>
-<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M792,-118C792,-118 534,-118 534,-118 528,-118 522,-112 522,-106 522,-106 522,-28 522,-28 522,-22 528,-16 534,-16 534,-16 792,-16 792,-16 798,-16 804,-22 804,-28 804,-28 804,-106 804,-106 804,-112 798,-118 792,-118"/>
-<text text-anchor="start" x="543" y="-90.6" font-family="Monospace" font-weight="bold" font-size="18.00">calexp</text>
-<text text-anchor="start" x="543" y="-61.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
-<text text-anchor="start" x="634" y="-61.8" font-family="Monospace" font-size="14.00"> {detector, visit}</text>
-<text text-anchor="start" x="543" y="-34.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
-<text text-anchor="start" x="659" y="-34.8" font-family="Monospace" font-size="14.00"> ExposureF</text>
+<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M486.5,-118C486.5,-118 228.5,-118 228.5,-118 222.5,-118 216.5,-112 216.5,-106 216.5,-106 216.5,-28 216.5,-28 216.5,-22 222.5,-16 228.5,-16 228.5,-16 486.5,-16 486.5,-16 492.5,-16 498.5,-22 498.5,-28 498.5,-28 498.5,-106 498.5,-106 498.5,-112 492.5,-118 486.5,-118"/>
+<text text-anchor="start" x="237.5" y="-90.6" font-family="Monospace" font-weight="bold" font-size="18.00">calexp</text>
+<text text-anchor="start" x="237.5" y="-61.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
+<text text-anchor="start" x="328.5" y="-61.8" font-family="Monospace" font-size="14.00"> {detector, visit}</text>
+<text text-anchor="start" x="237.5" y="-34.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
+<text text-anchor="start" x="353.5" y="-34.8" font-family="Monospace" font-size="14.00"> ExposureF</text>
 </g>
 <!-- calibrate:2&#45;&gt;calexp:0 -->
-<g id="edge15" class="edge">
+<g id="edge14" class="edge">
 <title>calibrate:2&#45;&gt;calexp:0</title>
-<path fill="none" stroke="black" stroke-width="1.5" d="M722,-187.86C722,-187.86 722,-133.24 722,-133.24"/>
-<polygon fill="black" stroke="black" stroke-width="1.5" points="727.25,-133.24 722,-118.24 716.75,-133.24 727.25,-133.24"/>
+<path fill="none" stroke="black" stroke-width="1.5" d="M652.3,-239C519.06,-239 361.5,-239 361.5,-239 361.5,-239 361.5,-133.14 361.5,-133.14"/>
+<polygon fill="black" stroke="black" stroke-width="1.5" points="366.75,-133.14 361.5,-118.14 356.25,-133.14 366.75,-133.14"/>
+</g>
+<!-- src:0 -->
+<g id="node14" class="node">
+<title>src:0</title>
+<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M804.5,-118C804.5,-118 546.5,-118 546.5,-118 540.5,-118 534.5,-112 534.5,-106 534.5,-106 534.5,-28 534.5,-28 534.5,-22 540.5,-16 546.5,-16 546.5,-16 804.5,-16 804.5,-16 810.5,-16 816.5,-22 816.5,-28 816.5,-28 816.5,-106 816.5,-106 816.5,-112 810.5,-118 804.5,-118"/>
+<text text-anchor="start" x="555.5" y="-90.6" font-family="Monospace" font-weight="bold" font-size="18.00">src</text>
+<text text-anchor="start" x="555.5" y="-61.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
+<text text-anchor="start" x="646.5" y="-61.8" font-family="Monospace" font-size="14.00"> {detector, visit}</text>
+<text text-anchor="start" x="555.5" y="-34.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
+<text text-anchor="start" x="671.5" y="-34.8" font-family="Monospace" font-size="14.00"> SourceCatalog</text>
+</g>
+<!-- calibrate:2&#45;&gt;src:0 -->
+<g id="edge15" class="edge">
+<title>calibrate:2&#45;&gt;src:0</title>
+<path fill="none" stroke="black" stroke-width="1.5" d="M734.5,-187.86C734.5,-187.86 734.5,-133.24 734.5,-133.24"/>
+<polygon fill="black" stroke="black" stroke-width="1.5" points="739.75,-133.24 734.5,-118.24 729.25,-133.24 739.75,-133.24"/>
 </g>
 <!-- calexpBackground:0 -->
 <g id="node15" class="node">
 <title>calexpBackground:0</title>
-<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M1110,-118C1110,-118 852,-118 852,-118 846,-118 840,-112 840,-106 840,-106 840,-28 840,-28 840,-22 846,-16 852,-16 852,-16 1110,-16 1110,-16 1116,-16 1122,-22 1122,-28 1122,-28 1122,-106 1122,-106 1122,-112 1116,-118 1110,-118"/>
-<text text-anchor="start" x="861" y="-90.6" font-family="Monospace" font-weight="bold" font-size="18.00">calexpBackground</text>
-<text text-anchor="start" x="861" y="-61.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
-<text text-anchor="start" x="952" y="-61.8" font-family="Monospace" font-size="14.00"> {detector, visit}</text>
-<text text-anchor="start" x="861" y="-34.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
-<text text-anchor="start" x="977" y="-34.8" font-family="Monospace" font-size="14.00"> Background</text>
+<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M1122.5,-118C1122.5,-118 864.5,-118 864.5,-118 858.5,-118 852.5,-112 852.5,-106 852.5,-106 852.5,-28 852.5,-28 852.5,-22 858.5,-16 864.5,-16 864.5,-16 1122.5,-16 1122.5,-16 1128.5,-16 1134.5,-22 1134.5,-28 1134.5,-28 1134.5,-106 1134.5,-106 1134.5,-112 1128.5,-118 1122.5,-118"/>
+<text text-anchor="start" x="873.5" y="-90.6" font-family="Monospace" font-weight="bold" font-size="18.00">calexpBackground</text>
+<text text-anchor="start" x="873.5" y="-61.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
+<text text-anchor="start" x="964.5" y="-61.8" font-family="Monospace" font-size="14.00"> {detector, visit}</text>
+<text text-anchor="start" x="873.5" y="-34.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
+<text text-anchor="start" x="989.5" y="-34.8" font-family="Monospace" font-size="14.00"> Background</text>
 </g>
 <!-- calibrate:2&#45;&gt;calexpBackground:0 -->
 <g id="edge16" class="edge">
 <title>calibrate:2&#45;&gt;calexpBackground:0</title>
-<path fill="none" stroke="black" stroke-width="1.5" d="M894.67,-187.86C894.67,-187.86 894.67,-133.24 894.67,-133.24"/>
-<polygon fill="black" stroke="black" stroke-width="1.5" points="899.92,-133.24 894.67,-118.24 889.42,-133.24 899.92,-133.24"/>
+<path fill="none" stroke="black" stroke-width="1.5" d="M907.17,-187.86C907.17,-187.86 907.17,-133.24 907.17,-133.24"/>
+<polygon fill="black" stroke="black" stroke-width="1.5" points="912.42,-133.24 907.17,-118.24 901.92,-133.24 912.42,-133.24"/>
 </g>
 <!-- 45e3f18b:0 -->
 <g id="node19" class="node">
 <title>45e3f18b:0</title>
-<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M1428,-134C1428,-134 1170,-134 1170,-134 1164,-134 1158,-128 1158,-122 1158,-122 1158,-12 1158,-12 1158,-6 1164,0 1170,0 1170,0 1428,0 1428,0 1434,0 1440,-6 1440,-12 1440,-12 1440,-122 1440,-122 1440,-128 1434,-134 1428,-134"/>
-<text text-anchor="start" x="1179" y="-106.6" font-family="Monospace" font-weight="bold" font-size="18.00">srcMatchFull</text>
-<text text-anchor="start" x="1179" y="-74.6" font-family="Monospace" font-weight="bold" font-size="18.00">srcMatch</text>
-<text text-anchor="start" x="1179" y="-45.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
-<text text-anchor="start" x="1270" y="-45.8" font-family="Monospace" font-size="14.00"> {detector, visit}</text>
-<text text-anchor="start" x="1179" y="-18.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
-<text text-anchor="start" x="1295" y="-18.8" font-family="Monospace" font-size="14.00"> Catalog</text>
+<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M1440.5,-134C1440.5,-134 1182.5,-134 1182.5,-134 1176.5,-134 1170.5,-128 1170.5,-122 1170.5,-122 1170.5,-12 1170.5,-12 1170.5,-6 1176.5,0 1182.5,0 1182.5,0 1440.5,0 1440.5,0 1446.5,0 1452.5,-6 1452.5,-12 1452.5,-12 1452.5,-122 1452.5,-122 1452.5,-128 1446.5,-134 1440.5,-134"/>
+<text text-anchor="start" x="1191.5" y="-106.6" font-family="Monospace" font-weight="bold" font-size="18.00">srcMatchFull</text>
+<text text-anchor="start" x="1191.5" y="-74.6" font-family="Monospace" font-weight="bold" font-size="18.00">srcMatch</text>
+<text text-anchor="start" x="1191.5" y="-45.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
+<text text-anchor="start" x="1282.5" y="-45.8" font-family="Monospace" font-size="14.00"> {detector, visit}</text>
+<text text-anchor="start" x="1191.5" y="-18.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
+<text text-anchor="start" x="1307.5" y="-18.8" font-family="Monospace" font-size="14.00"> Catalog</text>
 </g>
 <!-- calibrate:2&#45;&gt;45e3f18b:0 -->
 <g id="edge17" class="edge">
 <title>calibrate:2&#45;&gt;45e3f18b:0</title>
-<path fill="none" stroke="black" stroke-width="1.5" d="M949.33,-187.79C949.33,-157.89 949.33,-126 949.33,-126 949.33,-126 1142.79,-126 1142.79,-126"/>
-<polygon fill="black" stroke="black" stroke-width="1.5" points="1142.79,-131.25 1157.79,-126 1142.79,-120.75 1142.79,-131.25"/>
+<path fill="none" stroke="black" stroke-width="1.5" d="M961.83,-187.79C961.83,-157.89 961.83,-126 961.83,-126 961.83,-126 1155.29,-126 1155.29,-126"/>
+<polygon fill="black" stroke="black" stroke-width="1.5" points="1155.29,-131.25 1170.29,-126 1155.29,-120.75 1155.29,-131.25"/>
 </g>
 <!-- d28a74d6:0 -->
 <g id="node16" class="node">
 <title>d28a74d6:0</title>
-<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M1771.5,-1134C1771.5,-1134 1430.5,-1134 1430.5,-1134 1424.5,-1134 1418.5,-1128 1418.5,-1122 1418.5,-1122 1418.5,-1012 1418.5,-1012 1418.5,-1006 1424.5,-1000 1430.5,-1000 1430.5,-1000 1771.5,-1000 1771.5,-1000 1777.5,-1000 1783.5,-1006 1783.5,-1012 1783.5,-1012 1783.5,-1122 1783.5,-1122 1783.5,-1128 1777.5,-1134 1771.5,-1134"/>
-<text text-anchor="start" x="1440" y="-1106.6" font-family="Monospace" font-weight="bold" font-size="18.00">fringe</text>
-<text text-anchor="start" x="1440" y="-1074.6" font-family="Monospace" font-weight="bold" font-size="18.00">flat</text>
-<text text-anchor="start" x="1440" y="-1045.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
-<text text-anchor="start" x="1531" y="-1045.8" font-family="Monospace" font-size="14.00"> {detector, physical_filter}</text>
-<text text-anchor="start" x="1440" y="-1018.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
-<text text-anchor="start" x="1556" y="-1018.8" font-family="Monospace" font-size="14.00"> ExposureF</text>
+<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M1772,-1134C1772,-1134 1431,-1134 1431,-1134 1425,-1134 1419,-1128 1419,-1122 1419,-1122 1419,-1012 1419,-1012 1419,-1006 1425,-1000 1431,-1000 1431,-1000 1772,-1000 1772,-1000 1778,-1000 1784,-1006 1784,-1012 1784,-1012 1784,-1122 1784,-1122 1784,-1128 1778,-1134 1772,-1134"/>
+<text text-anchor="start" x="1440.5" y="-1106.6" font-family="Monospace" font-weight="bold" font-size="18.00">fringe</text>
+<text text-anchor="start" x="1440.5" y="-1074.6" font-family="Monospace" font-weight="bold" font-size="18.00">flat</text>
+<text text-anchor="start" x="1440.5" y="-1045.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
+<text text-anchor="start" x="1531.5" y="-1045.8" font-family="Monospace" font-size="14.00"> {detector, physical_filter}</text>
+<text text-anchor="start" x="1440.5" y="-1018.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
+<text text-anchor="start" x="1556.5" y="-1018.8" font-family="Monospace" font-size="14.00"> ExposureF</text>
 </g>
 <!-- d28a74d6:0&#45;&gt;isr:2 -->
 <g id="edge18" class="edge">
 <title>d28a74d6:0&#45;&gt;isr:2</title>
-<path fill="none" stroke="black" stroke-width="1.5" d="M1418.26,-1008C1283.98,-1008 1124.83,-1008 1124.83,-1008 1124.83,-1008 1124.83,-961.21 1124.83,-961.21"/>
-<polygon fill="black" stroke="black" stroke-width="1.5" points="1130.08,-961.21 1124.83,-946.21 1119.58,-961.21 1130.08,-961.21"/>
+<path fill="none" stroke="black" stroke-width="1.5" d="M1418.87,-1008C1286.26,-1008 1130,-1008 1130,-1008 1130,-1008 1130,-961.21 1130,-961.21"/>
+<polygon fill="black" stroke="black" stroke-width="1.5" points="1135.25,-961.21 1130,-946.21 1124.75,-961.21 1135.25,-961.21"/>
 </g>
 <!-- 998e6c26:0 -->
 <g id="node17" class="node">
 <title>998e6c26:0</title>
-<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M2114.5,-1134C2114.5,-1134 1831.5,-1134 1831.5,-1134 1825.5,-1134 1819.5,-1128 1819.5,-1122 1819.5,-1122 1819.5,-1012 1819.5,-1012 1819.5,-1006 1825.5,-1000 1831.5,-1000 1831.5,-1000 2114.5,-1000 2114.5,-1000 2120.5,-1000 2126.5,-1006 2126.5,-1012 2126.5,-1012 2126.5,-1122 2126.5,-1122 2126.5,-1128 2120.5,-1134 2114.5,-1134"/>
-<text text-anchor="start" x="1841" y="-1106.6" font-family="Monospace" font-weight="bold" font-size="18.00">raw</text>
-<text text-anchor="start" x="1841" y="-1074.6" font-family="Monospace" font-weight="bold" font-size="18.00">overscanRaw</text>
-<text text-anchor="start" x="1841" y="-1045.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
-<text text-anchor="start" x="1932" y="-1045.8" font-family="Monospace" font-size="14.00"> {detector, exposure}</text>
-<text text-anchor="start" x="1841" y="-1018.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
-<text text-anchor="start" x="1957" y="-1018.8" font-family="Monospace" font-size="14.00"> Exposure</text>
+<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M2115,-1134C2115,-1134 1832,-1134 1832,-1134 1826,-1134 1820,-1128 1820,-1122 1820,-1122 1820,-1012 1820,-1012 1820,-1006 1826,-1000 1832,-1000 1832,-1000 2115,-1000 2115,-1000 2121,-1000 2127,-1006 2127,-1012 2127,-1012 2127,-1122 2127,-1122 2127,-1128 2121,-1134 2115,-1134"/>
+<text text-anchor="start" x="1841.5" y="-1106.6" font-family="Monospace" font-weight="bold" font-size="18.00">raw</text>
+<text text-anchor="start" x="1841.5" y="-1074.6" font-family="Monospace" font-weight="bold" font-size="18.00">overscanRaw</text>
+<text text-anchor="start" x="1841.5" y="-1045.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
+<text text-anchor="start" x="1932.5" y="-1045.8" font-family="Monospace" font-size="14.00"> {detector, exposure}</text>
+<text text-anchor="start" x="1841.5" y="-1018.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
+<text text-anchor="start" x="1957.5" y="-1018.8" font-family="Monospace" font-size="14.00"> Exposure</text>
 </g>
 <!-- 998e6c26:0&#45;&gt;isr:2 -->
 <g id="edge19" class="edge">
 <title>998e6c26:0&#45;&gt;isr:2</title>
-<path fill="none" stroke="black" stroke-width="1.5" d="M1973,-999.51C1973,-951.33 1973,-895 1973,-895 1973,-895 1149.64,-895 1149.64,-895"/>
-<polygon fill="black" stroke="black" stroke-width="1.5" points="1149.64,-889.75 1134.64,-895 1149.64,-900.25 1149.64,-889.75"/>
+<path fill="none" stroke="black" stroke-width="1.5" d="M1973.5,-999.51C1973.5,-951.33 1973.5,-895 1973.5,-895 1973.5,-895 1162.16,-895 1162.16,-895"/>
+<polygon fill="black" stroke="black" stroke-width="1.5" points="1162.16,-889.75 1147.16,-895 1162.16,-900.25 1162.16,-889.75"/>
 </g>
 <!-- c1110ee2:0 -->
 <g id="node18" class="node">
 <title>c1110ee2:0</title>
-<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M474,-478C474,-478 224,-478 224,-478 218,-478 212,-472 212,-466 212,-466 212,-356 212,-356 212,-350 218,-344 224,-344 224,-344 474,-344 474,-344 480,-344 486,-350 486,-356 486,-356 486,-466 486,-466 486,-472 480,-478 474,-478"/>
-<text text-anchor="start" x="233" y="-450.6" font-family="Monospace" font-weight="bold" font-size="18.00">ps1_pv3_3pi_20170110</text>
-<text text-anchor="start" x="233" y="-418.6" font-family="Monospace" font-weight="bold" font-size="18.00">gaia_dr3_20230707</text>
-<text text-anchor="start" x="233" y="-389.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
-<text text-anchor="start" x="324" y="-389.8" font-family="Monospace" font-size="14.00"> {htm7}</text>
-<text text-anchor="start" x="233" y="-362.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
-<text text-anchor="start" x="349" y="-362.8" font-family="Monospace" font-size="14.00"> SimpleCatalog</text>
+<path fill="#f5f5f5" stroke="#00babc" stroke-width="3" d="M486.5,-478C486.5,-478 236.5,-478 236.5,-478 230.5,-478 224.5,-472 224.5,-466 224.5,-466 224.5,-356 224.5,-356 224.5,-350 230.5,-344 236.5,-344 236.5,-344 486.5,-344 486.5,-344 492.5,-344 498.5,-350 498.5,-356 498.5,-356 498.5,-466 498.5,-466 498.5,-472 492.5,-478 486.5,-478"/>
+<text text-anchor="start" x="245.5" y="-450.6" font-family="Monospace" font-weight="bold" font-size="18.00">ps1_pv3_3pi_20170110</text>
+<text text-anchor="start" x="245.5" y="-418.6" font-family="Monospace" font-weight="bold" font-size="18.00">gaia_dr3_20230707</text>
+<text text-anchor="start" x="245.5" y="-389.8" font-family="Monospace" font-style="italic" font-size="14.00">dimensions:</text>
+<text text-anchor="start" x="336.5" y="-389.8" font-family="Monospace" font-size="14.00"> {htm7}</text>
+<text text-anchor="start" x="245.5" y="-362.8" font-family="Monospace" font-style="italic" font-size="14.00">storage class:</text>
+<text text-anchor="start" x="361.5" y="-362.8" font-family="Monospace" font-size="14.00"> SimpleCatalog</text>
 </g>
 <!-- c1110ee2:0&#45;&gt;calibrate:2 -->
 <g id="edge20" class="edge">
 <title>c1110ee2:0&#45;&gt;calibrate:2</title>
-<path fill="none" stroke="black" stroke-width="1.5" d="M486.11,-352C582.62,-352 694.67,-352 694.67,-352 694.67,-352 694.67,-305.21 694.67,-305.21"/>
-<polygon fill="black" stroke="black" stroke-width="1.5" points="699.92,-305.21 694.67,-290.21 689.42,-305.21 699.92,-305.21"/>
+<path fill="none" stroke="black" stroke-width="1.5" d="M498.61,-352C595.12,-352 707.17,-352 707.17,-352 707.17,-352 707.17,-305.21 707.17,-305.21"/>
+<polygon fill="black" stroke="black" stroke-width="1.5" points="712.42,-305.21 707.17,-290.21 701.92,-305.21 712.42,-305.21"/>
 </g>
 </g>
 </svg>

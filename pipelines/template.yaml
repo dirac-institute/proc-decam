@@ -1,7 +1,7 @@
 description: |
   templates
 imports:
-  - ${DRP_PIPE_DIR}/pipelines/DECam/DRP-Merian.yaml
+  - ${PROC_DECAM_DIR}/pipelines/DRP.yaml
 
 tasks:
   assembleCoadd:
@@ -13,3 +13,4 @@ tasks:
       assembleStaticSkyModel.statistic: MEANCLIP
       prefilterArtifactsMaskPlanes: ["NO_DATA", "BAD", "SAT"] # remove SUSPECT from masking
       badMaskPlanes: ['NO_DATA', 'BAD', 'SAT'] # remove SUSPECT from masking
+
