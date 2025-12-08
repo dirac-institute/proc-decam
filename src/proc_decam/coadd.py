@@ -9,7 +9,7 @@ import parsl
 from parsl import bash_app
 from parsl.executors import HighThroughputExecutor
 from functools import partial
-from parsl import run_command, EpycProvider, KloneAstroProvider, KloneA40Provider
+from .parsl import run_command, EpycProvider, KloneAstroProvider, KloneA40Provider
 from subprocess import Popen, PIPE
 import selectors
 import sys
