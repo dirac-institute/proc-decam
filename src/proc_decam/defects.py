@@ -1,4 +1,6 @@
 import logging
+import requests
+import os
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -6,6 +8,23 @@ logger.setLevel(logging.INFO)
 
 BADPIX_VALUE = 1
 SUSPECTPIX_VALUE = 7
+
+def download_data(download_dir):
+    REMOTE_URL = "https://epyc.astro.washington.edu/~stevengs/decam_bpm"
+    for d in ['cp', 'des']:
+        r = requests.get(f"{REMOTE_URL}/{d}/index.dat")
+        r.raise_for_status()
+        files = r.text.strip().split("\n")
+        for f in files:
+            if os.path.exists(os.path.join(download_dir, d, f)):
+                logger.info("skipping existing file %s", f)
+                continue
+            os.makedirs(os.path.join(download_dir, d), exist_ok=True)
+            logger.info("downloading %s", f)
+            r2 = requests.get(f"{REMOTE_URL}/{d}/{f}")
+            r2.raise_for_status()
+            with open(os.path.join(download_dir, d, f), "wb") as fp:
+                fp.write(r2.content)
 
 def load_des(path, detector):
     import os
