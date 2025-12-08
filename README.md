@@ -8,7 +8,7 @@ Install LSST Science Pipelines: https://pipelines.lsst.io/
 
 Install this package on top of the pipelines:
 ```
-$ python -m pip install proc-decam
+$ python -m pip install git+github.com/dirac-institute/proc-decam.git
 ```
 
 Create LSST repository:
@@ -103,7 +103,7 @@ The `proc-decam execute` command handles executing a pipeline definition file (o
 
 # Reference Catalogs
 
-The calibration of science exposures requires reference catalogs which enable photometric and astrometric calibration. These reference catalogs are available via the `get-lsst-refcats` package: [https://github.com/dirac-institute/lsst_refcats]().
+The calibration of science exposures requires reference catalogs which enable photometric and astrometric calibration. These reference catalogs are available via the `get-lsst-refcats` package: [https://github.com/dirac-institute/lsst_refcats](https://github.com/dirac-institute/lsst_refcats).
 
 If providing and ingesting your own reference catalogs, update the reference catalog configurations of the `CalibrateTask` in `pipelines/DRP.yaml`.
 
