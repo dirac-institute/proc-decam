@@ -8,7 +8,7 @@ Install LSST Science Pipelines: https://pipelines.lsst.io/
 
 Install this package on top of the pipelines:
 ```
-$ python -m pip install git+github.com/dirac-institute/proc-decam.git
+$ python -m pip install git+https://github.com/dirac-institute/proc-decam.git
 ```
 
 Create LSST repository:
