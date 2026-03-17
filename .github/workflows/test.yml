@@ -18,29 +18,45 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Create non-root user with sudo
+        shell: bash
+        run: |
+          useradd -m lsst
+          echo "lsst ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/lsst
+          chown -R lsst:lsst $GITHUB_WORKSPACE
+
       - name: Install proc-decam
         shell: bash
         run: |
-          source /opt/lsst/software/stack/loadLSST.bash
-          setup lsst_distrib
-          pip install .
+          su -s /bin/bash lsst -c "
+            cd $GITHUB_WORKSPACE
+            source /opt/lsst/software/stack/loadLSST.bash
+            setup lsst_distrib
+            pip install .
+          "
 
       - name: Clone test data repositories
         shell: bash
         run: |
-          git clone https://github.com/dirac-institute/kbmod_imdiff_recipe.git
-          git clone https://github.com/dirac-institute/kbmod_mastercals_recipe.git
+          su -s /bin/bash lsst -c "
+            cd $GITHUB_WORKSPACE
+            git clone https://github.com/dirac-institute/kbmod_imdiff_recipe.git
+            git clone https://github.com/dirac-institute/kbmod_mastercals_recipe.git
+          "
 
       - name: Create exposures.ecsv and downloaded_exposures.ecsv
         shell: bash
         run: |
-          source /opt/lsst/software/stack/loadLSST.bash
-          setup lsst_distrib
-          python tests/make_exposures.py \
-            --mastercals-dir kbmod_mastercals_recipe/trimmedRawData/210318/calib \
-            --science-dir kbmod_imdiff_recipe/trimmedRawData/210318/science \
-            --output ./data/exposures.ecsv \
-            --image-dir ./data/images
+          su -s /bin/bash lsst -c "
+            cd $GITHUB_WORKSPACE
+            source /opt/lsst/software/stack/loadLSST.bash
+            setup lsst_distrib
+            python tests/make_exposures.py \
+              --mastercals-dir kbmod_mastercals_recipe/trimmedRawData/210318/calib \
+              --science-dir kbmod_imdiff_recipe/trimmedRawData/210318/science \
+              --output ./data/exposures.ecsv \
+              --image-dir ./data/images
+          "
 
       - name: Install PostgreSQL server
         shell: bash
@@ -50,52 +66,63 @@ jobs:
       - name: Set up Butler database
         shell: bash
         run: |
-          source /opt/lsst/software/stack/loadLSST.bash
-          setup lsst_distrib
-          proc-decam db create ./repo
-          proc-decam db start ./repo
+          su -s /bin/bash lsst -c "
+            cd $GITHUB_WORKSPACE
+            source /opt/lsst/software/stack/loadLSST.bash
+            setup lsst_distrib
+            proc-decam db create ./repo
+            proc-decam db start ./repo
+          "
 
       - name: Set up Butler and ingest data
         shell: bash
         run: |
-          source /opt/lsst/software/stack/loadLSST.bash
-          setup lsst_distrib
-          {
-            butler register-instrument ./repo lsst.obs.decam.DarkEnergyCamera
-            butler write-curated-calibrations ./repo lsst.obs.decam.DarkEnergyCamera
-          } &
-          {
-            butler register-skymap ./repo -c name='discrete'
-          } &
-          {
-            proc-decam refcats ./repo ./data/exposures.ecsv
-          } &
-          {
-            cd kbmod_imdiff_recipe/trimmedRawData/fakes
-            git checkout stetzler/add-band-to-fakes
-            python create_fakes.py
-            cd ../../..
-            proc-decam fakes ./repo \
-              kbmod_imdiff_recipe/trimmedRawData/fakes/fakes_fakeSrcCat.fits \
-              --format fits
-          } &
-          wait
+          su -s /bin/bash lsst -c "
+            cd $GITHUB_WORKSPACE
+            source /opt/lsst/software/stack/loadLSST.bash
+            setup lsst_distrib
+            {
+              butler register-instrument ./repo lsst.obs.decam.DarkEnergyCamera
+              butler write-curated-calibrations ./repo lsst.obs.decam.DarkEnergyCamera
+            } &
+            {
+              butler register-skymap ./repo -c name='discrete'
+            } &
+            {
+              proc-decam refcats ./repo ./data/exposures.ecsv
+            } &
+            {
+              cd kbmod_imdiff_recipe/trimmedRawData/fakes
+              git checkout stetzler/add-band-to-fakes
+              python create_fakes.py
+              cd ../../..
+              proc-decam fakes ./repo \
+                kbmod_imdiff_recipe/trimmedRawData/fakes/fakes_fakeSrcCat.fits \
+                --format fits
+            } &
+            wait
+          "
 
       - name: Process night
         shell: bash
         run: |
-          source /opt/lsst/software/stack/loadLSST.bash
-          setup lsst_distrib
-          proc-decam night ./repo ./data/exposures.ecsv \
-            --where "instrument='DECam' and detector=35"
+          su -s /bin/bash lsst -c "
+            cd $GITHUB_WORKSPACE
+            source /opt/lsst/software/stack/loadLSST.bash
+            setup lsst_distrib
+            proc-decam night ./repo ./data/exposures.ecsv \
+              --where \"instrument='DECam' and detector=35\"
+          "
 
       - name: Coadd
         shell: bash
         run: |
-          source /opt/lsst/software/stack/loadLSST.bash
-          setup lsst_distrib
-          # '*' selects all available drp collections as warp inputs
-          proc-decam coadd ./repo "*" \
-            --coadd-subset all \
-            --template-type meanclip \
-            --warp-coadd-name deep
+          su -s /bin/bash lsst -c "
+            cd $GITHUB_WORKSPACE
+            source /opt/lsst/software/stack/loadLSST.bash
+            setup lsst_distrib
+            proc-decam coadd ./repo \"*\" \
+              --coadd-subset all \
+              --template-type meanclip \
+              --warp-coadd-name deep
+          "
