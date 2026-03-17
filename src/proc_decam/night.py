@@ -7,6 +7,7 @@ import parsl
 from parsl import bash_app
 from parsl.executors import HighThroughputExecutor
 from .parsl import EpycProvider, KloneAstroProvider, KloneA40Provider, run_command
+from . import pipeline as pipeline_module
 from functools import partial
 
 proc_to_obs = dict(
@@ -131,23 +132,17 @@ def main():
 
             if proc_type == "bias":
                 steps = ["step1", "step2"]
-                cmd = [
-                    "proc-decam",
-                    "pipeline",
+                pipeline_futures = pipeline_module.build_futures(
                     args.repo,
                     proc_type,
-                    night,
-                    "--steps"
-                ] + steps
-                cmd += ["--slurm"] if args.pipeline_slurm else []
-                cmd += [f"--where \"{args.where}\""] if args.where else []
-
-                cmd = " ".join(map(str, cmd))
-                func = partial(run_command)
-                setattr(func, "__name__", f"pipeline_{night}_{proc_type}")
-                future = bash_app(func)(cmd, inputs=inputs)
-                inputs = [future]
-                futures.append(future)
+                    str(night),
+                    steps=steps,
+                    where=args.where,
+                    inputs=inputs,
+                )
+                futures.extend(pipeline_futures)
+                if pipeline_futures:
+                    inputs = [pipeline_futures[-1]]
 
                 cmd = [
                     "proc-decam",
@@ -185,23 +180,17 @@ def main():
 
             elif proc_type == "flat":
                 steps = ["step0", "step1", "step2", "step3"]
-                cmd = [
-                    "proc-decam",
-                    "pipeline",
+                pipeline_futures = pipeline_module.build_futures(
                     args.repo,
                     proc_type,
-                    night,
-                    "--steps"
-                ] + steps
-                cmd += ["--slurm"] if args.pipeline_slurm else []
-                cmd += [f"--where \"{args.where}\""] if args.where else []
-
-                cmd = " ".join(map(str, cmd))
-                func = partial(run_command)
-                setattr(func, "__name__", f"pipeline_{night}_{proc_type}")
-                future = bash_app(func)(cmd, inputs=inputs)
-                inputs = [future]
-                futures.append(future)
+                    str(night),
+                    steps=steps,
+                    where=args.where,
+                    inputs=inputs,
+                )
+                futures.extend(pipeline_futures)
+                if pipeline_futures:
+                    inputs = [pipeline_futures[-1]]
 
                 cmd = [
                     "proc-decam",
@@ -264,25 +253,19 @@ def main():
                     inputs = [future]
                     futures.append(future)
 
-                cmd = [
-                    "proc-decam",
-                    "pipeline",
+                pipeline_futures = pipeline_module.build_futures(
                     args.repo,
                     proc_type,
-                    night,
-                    "--steps", 
-                ] + steps
-                cmd += ["--slurm"] if args.pipeline_slurm else []
-                cmd += [f"--where \"{args.where}\""] if args.where else []
-                cmd += ["--coadd-subset", args.coadd_subset] if args.coadd_subset else []
-                cmd += ["--template-type", args.template_type] if args.template_type else []
-
-                cmd = " ".join(map(str, cmd))
-                func = partial(run_command)
-                setattr(func, "__name__", f"pipeline_{night}_{proc_type}")
-                future = bash_app(func)(cmd, inputs=inputs)
-                inputs = [future]
-                futures.append(future)
+                    str(night),
+                    template_type=args.template_type or "",
+                    coadd_subset=args.coadd_subset or "",
+                    steps=steps,
+                    where=args.where,
+                    inputs=inputs,
+                )
+                futures.extend(pipeline_futures)
+                if pipeline_futures:
+                    inputs = [pipeline_futures[-1]]
             else:
                 raise Exception(f"unsupported proc type {proc_type}")
     

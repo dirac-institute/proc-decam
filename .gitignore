@@ -213,6 +213,9 @@ monitor.sqlite
 # proc-decam
 data
 
+# setuptools-scm generated version file
+src/proc_decam/_version.py
+
 # lsst
 submit
 repo*

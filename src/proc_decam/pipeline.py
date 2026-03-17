@@ -40,20 +40,138 @@ pipelines = dict(
     diff_drp="DRP.yaml",
 )
 
-if not os.path.exists(os.path.join(os.getcwd(), "pipelines")):
-    raise RuntimeError("Cannot find directory 'pipelines' in the current working directory")
-
 import parsl
 from parsl import bash_app
 from parsl.executors import HighThroughputExecutor
 from .parsl import EpycProvider, KloneA40Provider, run_command
 from functools import partial
 
+
+def build_futures(repo, proc_type, subset, template_type="", coadd_subset="", steps=None, where=None, inputs=None):
+    """
+    Build Parsl futures for executing a pipeline over matching Butler collections.
+
+    Adds tasks to the currently-loaded Parsl configuration without creating a new
+    Parsl context. This allows callers (e.g. ``night`` or ``coadd``) to add these
+    tasks to their own single Parsl pipeline rather than nesting a separate one.
+
+    Parameters
+    ----------
+    repo : str
+        Path to the Butler repository.
+    proc_type : str
+        Processing type key (e.g. ``'bias'``, ``'flat'``, ``'drp'``, ``'coadd'``).
+    subset : str
+        Night or coadd-subset identifier used to match Butler collections.
+    template_type : str, optional
+        Template type (e.g. ``'meanclip'``).  Defaults to ``''``.
+    coadd_subset : str, optional
+        Coadd subset identifier.  Defaults to ``''``.
+    steps : list of str, optional
+        Pipeline steps to execute (e.g. ``['step1', 'step2']``).
+    where : str, optional
+        Butler data query string passed to ``proc-decam execute``.
+    inputs : list, optional
+        Upstream Parsl futures that all tasks created here will depend on.
+
+    Returns
+    -------
+    list
+        Parsl futures representing the pipeline execution tasks, in dependency
+        order.  Pass the last element as an upstream ``inputs`` dependency for
+        any subsequent tasks.
+    """
+    import lsst.daf.butler as dafButler
+    from lsst.daf.butler.registry import CollectionType
+    import re
+
+    if steps is None:
+        steps = []
+    if inputs is None:
+        inputs = []
+
+    butler = dafButler.Butler(repo)
+    collections = butler.registry.queryCollections(
+        re.compile(
+            os.path.normpath(f"{subset}/{coadd_subset}/{template_type}/{proc_type}")
+        ),
+        collectionTypes=CollectionType.CHAINED,
+    )
+
+    pipeline_file = pipelines[proc_type]
+    if proc_type == "coadd":
+        pipeline_file = pipeline_file[template_type]
+
+    futures = []
+    for collection in collections:
+        collection_subset = collection.split("/")[0]
+        local_inputs = list(inputs)
+        for step in steps:
+            cmd = [
+                "proc-decam",
+                "collection",
+                repo,
+                proc_type,
+                collection_subset,
+            ]
+            if template_type:
+                cmd += ["--template-type", template_type]
+            if coadd_subset:
+                cmd += ["--coadd-subset", coadd_subset]
+            cmd = " ".join(map(str, cmd))
+            func = partial(run_command)
+            setattr(func, "__name__", f"collection_{collection_subset}_{proc_type}_{step}")
+            future = bash_app(func)(cmd, inputs=local_inputs)
+            local_inputs = [future]
+            futures.append(future)
+
+            cmd = [
+                "proc-decam",
+                "execute",
+                repo,
+                collection,
+                "--pipeline", f"{os.getcwd()}/pipelines/{pipeline_file}#{step}",
+            ]
+            if where:
+                cmd += [f"--where \"{where}\""]
+            cmd = " ".join(map(str, cmd))
+            func = partial(run_command)
+            setattr(func, "__name__", f"execute_{collection_subset}_{proc_type}_{step}")
+            future = bash_app(func)(cmd, inputs=local_inputs)
+            local_inputs = [future]
+            futures.append(future)
+
+            # update collection chain after each step so the final state is
+            # correct even if a later step fails
+            cmd = [
+                "proc-decam",
+                "collection",
+                repo,
+                proc_type,
+                collection_subset,
+            ]
+            if template_type:
+                cmd += ["--template-type", template_type]
+            if coadd_subset:
+                cmd += ["--coadd-subset", coadd_subset]
+            cmd = " ".join(map(str, cmd))
+            func = partial(run_command)
+            setattr(func, "__name__", f"collection_{collection_subset}_{proc_type}_{step}")
+            future = bash_app(func)(cmd, inputs=local_inputs)
+            local_inputs = [future]
+            futures.append(future)
+
+    return futures
+
+
 def main():
     import argparse
     import lsst.daf.butler as dafButler
     from lsst.daf.butler.registry import CollectionType
     import re
+
+    if not os.path.exists(os.path.join(os.getcwd(), "pipelines")):
+        raise RuntimeError("Cannot find directory 'pipelines' in the current working directory")
 
     parser = argparse.ArgumentParser(prog="proc-decam pipeline")
     parser.add_argument("repo")
@@ -94,77 +212,16 @@ def main():
     )
     parsl.load(config)
 
-    butler = dafButler.Butler(args.repo)
-    collections = butler.registry.queryCollections(
-        re.compile(
-            os.path.normpath(f"{args.subset}/{args.coadd_subset}/{args.template_type}/{args.proc_type}")
-        ), 
-        collectionTypes=CollectionType.CHAINED
+    futures = build_futures(
+        args.repo,
+        args.proc_type,
+        args.subset,
+        template_type=args.template_type,
+        coadd_subset=args.coadd_subset,
+        steps=args.steps,
+        where=args.where,
     )
 
-    pipeline = pipelines[args.proc_type]
-    if args.proc_type == "coadd":
-        pipeline = pipeline[args.template_type]
-    futures = []
-    for collection in collections:
-        l = collection.split("/")
-        subset = l[0]
-        inputs = []
-        for step in args.steps:
-            cmd = [
-                "proc-decam",
-                "collection",
-                args.repo,
-                args.proc_type,
-                subset,
-            ]
-            if args.template_type:
-                cmd += ["--template-type", args.template_type]
-            if args.coadd_subset:
-                cmd += ["--coadd-subset", args.coadd_subset]
-
-            cmd = " ".join(map(str, cmd))
-            func = partial(run_command)
-            setattr(func, "__name__", f"collection_{subset}_{args.proc_type}_{step}")
-            future = bash_app(func)(cmd, inputs=inputs)
-            inputs = [future]
-            futures.append(future)
-
-            cmd = [
-                "proc-decam",
-                "execute",
-                args.repo,
-                collection,
-                "--pipeline", f"{os.getcwd()}/pipelines/{pipeline}#{step}",
-            ]
-            if args.where:
-                cmd += [f"--where \"{args.where}\""]
-            cmd = " ".join(map(str, cmd))
-            func = partial(run_command)
-            setattr(func, "__name__", f"execute_{subset}_{args.proc_type}_{step}")
-            future = bash_app(func)(cmd, inputs=inputs)
-            inputs = [future]
-            futures.append(future)
-            # put final job in here?
-            # in case the final job never ran...?
-            cmd = [
-                "proc-decam",
-                "collection",
-                args.repo,
-                args.proc_type,
-                subset,
-            ]
-            if args.template_type:
-                cmd += ["--template-type", args.template_type]
-            if args.coadd_subset:
-                cmd += ["--coadd-subset", args.coadd_subset]
-            cmd = " ".join(map(str, cmd))
-            func = partial(run_command)
-            setattr(func, "__name__", f"collection_{subset}_{args.proc_type}_{step}")
-            future = bash_app(func)(cmd, inputs=inputs)
-            inputs = [future]
-            futures.append(future)
-    
     for future in futures:
         if future:
             future.exception()
