@@ -1,0 +1,87 @@
+name: Tests
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+    container:
+      image: lsstsqre/centos:7-stack-lsst_distrib-w_2024_34
+      options: --user root
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install proc-decam
+        shell: bash
+        run: |
+          source /opt/lsst/software/stack/loadLSST.bash
+          setup lsst_distrib
+          pip install .
+
+      - name: Clone test data repositories
+        shell: bash
+        run: |
+          git clone https://github.com/dirac-institute/kbmod_imdiff_recipe.git
+          git clone https://github.com/dirac-institute/kbmod_mastercals_recipe.git
+
+      - name: Create exposures.ecsv and downloaded_exposures.ecsv
+        shell: bash
+        run: |
+          source /opt/lsst/software/stack/loadLSST.bash
+          setup lsst_distrib
+          python tests/make_exposures.py \
+            --mastercals-dir kbmod_mastercals_recipe/trimmedRawData/210318/calib \
+            --science-dir kbmod_imdiff_recipe/trimmedRawData/210318/science \
+            --output ./data/exposures.ecsv \
+            --image-dir ./data/images
+          # Also place the files at the root so that proc-decam refcats can use ./exposures.ecsv
+          cp ./data/exposures.ecsv ./exposures.ecsv
+          cp ./data/downloaded_exposures.ecsv ./downloaded_exposures.ecsv
+
+      - name: Set up Butler repository
+        shell: bash
+        run: |
+          source /opt/lsst/software/stack/loadLSST.bash
+          setup lsst_distrib
+          butler create ./repo
+          butler register-instrument ./repo lsst.obs.decam.DarkEnergyCamera
+          butler write-curated-calibrations ./repo lsst.obs.decam.DarkEnergyCamera
+          butler register-skymap ./repo -c name='discrete'
+
+      - name: Get reference catalogs
+        shell: bash
+        run: |
+          source /opt/lsst/software/stack/loadLSST.bash
+          setup lsst_distrib
+          proc-decam refcats ./repo ./exposures.ecsv
+
+      - name: Ingest fakes
+        shell: bash
+        run: |
+          source /opt/lsst/software/stack/loadLSST.bash
+          setup lsst_distrib
+          proc-decam fakes ./repo \
+            kbmod_imdiff_recipe/trimmedRawData/fakes/fakes_fakeSrcCat.fits
+
+      - name: Process night
+        shell: bash
+        run: |
+          source /opt/lsst/software/stack/loadLSST.bash
+          setup lsst_distrib
+          proc-decam night ./repo ./data/exposures.ecsv \
+            --where "instrument='DECam' and detector=35"
+
+      - name: Coadd
+        shell: bash
+        run: |
+          source /opt/lsst/software/stack/loadLSST.bash
+          setup lsst_distrib
+          # '*' selects all available drp collections as warp inputs
+          proc-decam coadd ./repo "*" \
+            --coadd-subset all \
+            --template-type meanclip \
+            --warp-coadd-name deep
