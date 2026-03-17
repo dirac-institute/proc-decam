@@ -157,7 +157,7 @@ $ proc-decam coadd ./repo "2019*/drp" --coadd-subset 2019 --template-type meancl
 
 Difference images can be produced on a nightly basis by executing the `proc-decam night` command again, but specifying the `--proc-type`, `--coadd-subset`, and `--template-type`:
 ```
-$ proc-decam night ./repo 20190401 --proc-type diff_drp --coadd-subset 2019 --template-type meanclip 
+$ proc-decam night ./repo ./data/exposures.ecsv --nights 20190401 --proc-type diff_drp --coadd-subset 2019 --template-type meanclip 
 ```
 
 ## Data dependencies
