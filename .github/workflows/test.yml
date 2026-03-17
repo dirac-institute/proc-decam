@@ -21,7 +21,6 @@ jobs:
       - name: Create non-root user with sudo
         shell: bash
         run: |
-          useradd -m lsst
           echo "lsst ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/lsst
           chown -R lsst:lsst $GITHUB_WORKSPACE
 
