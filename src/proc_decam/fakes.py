@@ -11,7 +11,7 @@ def main():
 
     args = parser.parse_args()
 
-    fakes = astropy.table.Table.read(args.fakes)
+    fakes = astropy.table.Table.read(args.fakes, format='fits')
 
     def rename_if_not_exist(x, y, default=None):
         if y not in fakes.columns:
