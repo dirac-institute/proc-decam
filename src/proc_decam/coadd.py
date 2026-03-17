@@ -10,6 +10,7 @@ from parsl import bash_app
 from parsl.executors import HighThroughputExecutor
 from functools import partial
 from .parsl import run_command, EpycProvider, KloneAstroProvider, KloneA40Provider
+from . import pipeline as pipeline_module
 from subprocess import Popen, PIPE
 import selectors
 import sys
@@ -157,38 +158,20 @@ def main():
     inputs = [future]
     futures.append(future)
         
-    # execute coadd
-    # cmd = [
-    #     "proc-decam",
-    #     "execute",
-    #     args.repo,
-    #     os.path.normpath(f"{args.coadd_name}/{args.coadd_subset}/coadd/{args.template_type}"),
-    #     "--pipeline", f"{os.environ.get('PROC_DECAM_DIR')}/pipelines/{pipeline_lookup[args.template_type]}#assembleCoadd",
-    # ]
-    # if args.where:
-    #     cmd += [f"--where \"{args.where}\""]
-    # 
     # coadd pipeline
     steps = ["step3b", "step3c", "step3d"]
-    cmd = [
-        "proc-decam",
-        "pipeline",
+    pipeline_futures = pipeline_module.build_futures(
         args.repo,
         "coadd",
         args.coadd_subset,
-        "--steps", 
-    ] + steps
-    cmd += ["--template-type", args.template_type] if args.template_type else []
-    cmd += ["--slurm"] if args.pipeline_slurm else []
-    cmd += [f"--where \"{args.where}\""] if args.where else []
-        
-    # collection
-    cmd = " ".join(map(str, cmd))
-    func = partial(run_command)
-    setattr(func, "__name__", f"execute_coadd")
-    future = bash_app(func)(cmd, inputs=inputs)
-    inputs = [future]
-    futures.append(future)
+        template_type=args.template_type or "",
+        steps=steps,
+        where=args.where,
+        inputs=inputs,
+    )
+    futures.extend(pipeline_futures)
+    if pipeline_futures:
+        inputs = [pipeline_futures[-1]]
 
     cmd = [
         "proc-decam",

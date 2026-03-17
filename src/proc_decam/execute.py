@@ -13,9 +13,6 @@ import selectors
 import sys
 import argparse
 
-if not os.path.exists(os.path.join(os.getcwd(), "pipelines")):
-    raise RuntimeError("Cannot find directory 'pipelines' in the current working directory")
-
 processes = []
 
 def cleanup():
