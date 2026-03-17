@@ -36,8 +36,9 @@ inputs = dict(
         "{subset}/drp/raw",
     ],
     coadd=[
-        "{subset}/{template_type}/coadd/warps",
+        "{subset}/{template_type}/coadd/inputs",
         "skymaps",
+        "refcats",
     ],
     diff_drp=[
         "{coadd_subset}/{template_type}/coadd", # coadds CHAINED
@@ -102,6 +103,7 @@ def main():
         if missing:
             logger.warning("missing children %s", missing)
             if args.overwrite:
+                logger.info("overwriting existing chain")
                 butler.registry.setCollectionChain(parent, chain)
         else:
             if new:

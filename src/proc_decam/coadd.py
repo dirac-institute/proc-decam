@@ -107,41 +107,27 @@ def main():
     )
     parsl.load(config)
 
-    warp_collection = os.path.normpath(f"{args.coadd_subset}/{args.template_type}/coadd/warps")
+    inputs_collection = os.path.normpath(f"{args.coadd_subset}/{args.template_type}/coadd/inputs")
 
     futures = [] # chage to dictionary
     inputs = []
-    # associate warps
-    cmd = [
-        "proc-decam",
-        "associate",
-        args.repo,
-        warp_collection,
-        "--collections", f"{args.subset}/drp",
-        "--datasets", f"{args.warp_coadd_name}Coadd_directWarp"
-    ]
-    cmd = " ".join(map(str, cmd))
-    func = partial(run_command)
-    setattr(func, "__name__", f"associate_directWarp")
-    future = bash_app(func)(cmd, inputs=inputs)
-    inputs = [future]
-    futures.append(future)
-
-    cmd = [
-        "proc-decam",
-        "associate",
-        args.repo,
-        warp_collection,
-        "--collections", f"{args.subset}/drp",
-        "--datasets", f"{args.warp_coadd_name}Coadd_psfMatchedWarp"
-    ]
-    cmd = " ".join(map(str, cmd))
-    func = partial(run_command)
-    setattr(func, "__name__", f"associate_psfMatchedWarp")
-    future = bash_app(func)(cmd, inputs=inputs)
-    inputs = [future]
-    futures.append(future)    
-
+    for dataset in [f"{args.warp_coadd_name}Coadd_directWarp", f"{args.warp_coadd_name}Coadd_psfMatchedWarp", "preSourceTable_visit", "finalized_src_table"]:
+    # associate dataset
+        cmd = [
+            "proc-decam",
+            "associate",
+            args.repo,
+            inputs_collection,
+            "--collections", f"{args.subset}/drp",
+            "--datasets", dataset
+        ]
+        cmd = " ".join(map(str, cmd))
+        func = partial(run_command)
+        setattr(func, "__name__", f"associate_{dataset}")
+        future = bash_app(func)(cmd, inputs=inputs)
+        futures.append(future)
+    
+    inputs = [f for f in futures]
     cmd = [
         "proc-decam",
         "collection",
