@@ -17,7 +17,7 @@ jobs:
           cat <<EOF > Dockerfile
           FROM lsstsqre/centos:7-stack-lsst_distrib-w_2024_34
           USER root
-          RUN yum install -y postgresql-server && yum clean all
+          RUN yum install -y postgresql-server postgresql-contrib && yum clean all
           # Revert to the default stack user (usually 'lsst') 
           # so subsequent jobs don't run as root by default.
           USER lsst
