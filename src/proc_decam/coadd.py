@@ -194,7 +194,16 @@ def main():
 
     for future in futures:
         if future:
-            future.exception()
+            try:
+                future.result()
+            except Exception:
+                for log_attr in ('stdout', 'stderr'):
+                    log_path = getattr(future, log_attr, None)
+                    if log_path and os.path.exists(log_path):
+                        print(f"\n=== Task {log_attr} ({log_path}) ===", file=sys.stderr)
+                        with open(log_path) as f:
+                            print(f.read(), file=sys.stderr)
+                raise
     
     parsl.dfk().cleanup()
 
