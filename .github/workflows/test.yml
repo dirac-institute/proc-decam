@@ -42,6 +42,11 @@ jobs:
             --output ./data/exposures.ecsv \
             --image-dir ./data/images
 
+      - name: Install PostgreSQL server
+        shell: bash
+        run: |
+          yum install -y postgresql-server
+
       - name: Set up Butler database
         shell: bash
         run: |
