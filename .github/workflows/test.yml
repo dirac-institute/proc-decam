@@ -26,85 +26,93 @@ jobs:
         shell: bash
         run: |
           chmod -R a+rw .
+
+          # Write the pipeline script to a file to avoid quoting issues
+          # when passing commands with single-quotes to docker run /bin/bash -c '...'
+          cat > /tmp/pipeline.sh << 'PIPELINE_EOF'
+          #!/bin/bash
+          set -euo pipefail
+          source /opt/lsst/software/stack/loadLSST.bash
+          setup lsst_distrib
+          set -x
+
+          pip install .
+
+          git clone https://github.com/dirac-institute/kbmod_imdiff_recipe.git &
+          git clone https://github.com/dirac-institute/kbmod_mastercals_recipe.git &
+          wait
+
+          pushd kbmod_imdiff_recipe
+          git lfs fetch && git lfs checkout
+          popd
+          pushd kbmod_mastercals_recipe
+          git lfs fetch && git lfs checkout
+          popd
+
+          caldir="kbmod_mastercals_recipe/trimmedRawData/210318/calib"
+
+          echo "=== sizes/types of suspect files ==="
+          ls -lh "$caldir"/*zri.fits.fz "$caldir"/*fri.fits.fz || true
+          file "$caldir"/*zri.fits.fz "$caldir"/*fri.fits.fz || true
+
+          echo "=== detect LFS pointers (should print nothing) ==="
+          grep -RIl --null "git-lfs.github.com/spec" "$caldir" | tr '\0' '\n' || true
+
+          echo "=== show first 2 lines (if you see version https://git-lfs... it's a pointer; if HTML, it's an error page) ==="
+          for f in "$caldir"/*zri.fits.fz "$caldir"/*fri.fits.fz; do
+            echo "--- $f ---"
+            head -n 2 "$f" || true
+          done
+
+          pushd kbmod_imdiff_recipe/trimmedRawData/fakes
+          git checkout stetzler/add-band-to-fakes && python create_fakes.py
+          popd
+
+          python tests/make_exposures.py \
+            --mastercals-dir kbmod_mastercals_recipe/trimmedRawData/210318/calib \
+            --science-dir kbmod_imdiff_recipe/trimmedRawData/210318/science \
+            --output ./data/exposures.ecsv \
+            --image-dir ./data/images
+
+          proc-decam db create ./repo
+          proc-decam db start ./repo
+
+          butler register-instrument ./repo lsst.obs.decam.DarkEnergyCamera
+          butler write-curated-calibrations ./repo lsst.obs.decam.DarkEnergyCamera
+
+          butler register-skymap ./repo -c name='discrete'
+
+          proc-decam refcats ./repo ./data/exposures.ecsv
+
+          proc-decam fakes ./repo \
+            kbmod_imdiff_recipe/trimmedRawData/fakes/fakes_fakeSrcCat.fits \
+            --format fits
+
+          ls .
+          ls /home/lsst/work/data
+          ls -l /home/lsst/work/data/images
+          fitsheader -e 0 /home/lsst/work/data/images/*_zri.fits.fz
+          fitsheader -e 0 /home/lsst/work/data/images/*_fri.fits.fz
+          fitsheader -e 0 /home/lsst/work/data/images/*_ori.fits.fz
+
+          proc-decam ingest ./data/exposures.ecsv -b ./repo \
+            --image-dir ./data/images \
+            --select night=20210318 obs_type='zero'
+
+          proc-decam night ./repo ./data/exposures.ecsv \
+            --where "instrument='DECam' and detector=35" \
+            --debug
+
+          proc-decam coadd ./repo "*" \
+            --coadd-subset all \
+            --template-type meanclip \
+            --warp-coadd-name deep \
+            --debug
+          PIPELINE_EOF
+
+          chmod +x /tmp/pipeline.sh
           docker run --rm \
+            -v /tmp/pipeline.sh:/tmp/pipeline.sh \
             -v $GITHUB_WORKSPACE:/home/lsst/work \
             -w /home/lsst/work \
-            ghcr.io/${{ github.repository }}:lsst-w_2024_34 /bin/bash -c '
-              source /opt/lsst/software/stack/loadLSST.bash
-              setup lsst_distrib
-
-              set -x
-
-              pip install .
-
-              git clone https://github.com/dirac-institute/kbmod_imdiff_recipe.git &
-              git clone https://github.com/dirac-institute/kbmod_mastercals_recipe.git &
-              wait
-              
-              pushd kbmod_imdiff_recipe
-              git lfs fetch && git lfs checkout
-              popd
-              pushd kbmod_mastercals_recipe
-              git lfs fetch && git lfs checkout
-              popd
-              
-              caldir="kbmod_mastercals_recipe/trimmedRawData/210318/calib"
-              
-              echo "=== sizes/types of suspect files ==="
-              ls -lh "$caldir"/*zri.fits.fz "$caldir"/*fri.fits.fz || true
-              file "$caldir"/*zri.fits.fz "$caldir"/*fri.fits.fz || true
-              
-              echo "=== detect LFS pointers (should print nothing) ==="
-              grep -RIl --null "git-lfs.github.com/spec" "$caldir" | tr '\0' '\n' || true
-              
-              echo "=== show first 2 lines (if you see version https://git-lfs... it's a pointer; if HTML, it's an error page) ==="
-              for f in "$caldir"/*zri.fits.fz "$caldir"/*fri.fits.fz; do
-                echo "--- $f ---"
-                head -n 2 "$f" || true
-              done
-              
-              pushd kbmod_imdiff_recipe/trimmedRawData/fakes
-              git checkout stetzler/add-band-to-fakes && python create_fakes.py
-              popd
-
-              python tests/make_exposures.py \
-                --mastercals-dir kbmod_mastercals_recipe/trimmedRawData/210318/calib \
-                --science-dir kbmod_imdiff_recipe/trimmedRawData/210318/science \
-                --output ./data/exposures.ecsv \
-                --image-dir ./data/images
-
-              proc-decam db create ./repo
-              proc-decam db start ./repo
-
-              butler register-instrument ./repo lsst.obs.decam.DarkEnergyCamera
-              butler write-curated-calibrations ./repo lsst.obs.decam.DarkEnergyCamera
-
-              butler register-skymap ./repo -c name="discrete"
-
-              proc-decam refcats ./repo ./data/exposures.ecsv
-
-              proc-decam fakes ./repo \
-                kbmod_imdiff_recipe/trimmedRawData/fakes/fakes_fakeSrcCat.fits \
-                --format fits
-
-              ls .
-              ls /home/lsst
-              ls /home/lsst/work
-              ls /home/lsst/work/data
-              ls /home/lsst/work/data/images
-              ls -l /home/lsst/work/data/images
-              fitsheader -e 0 /home/lsst/work/data/images/*_zri.fits.fz
-              fitsheader -e 0 /home/lsst/work/data/images/*_fri.fits.fz
-              fitsheader -e 0 /home/lsst/work/data/images/*_ori.fits.fz
-              
-              proc-decam ingest ./data/exposures.ecsv -b ./repo --image-dir ./data/images --select night=20210318 obs_type='zero'
-              
-              #proc-decam night ./repo ./data/exposures.ecsv \
-              #  --where \"instrument='DECam' and detector=35\" \
-              #  --debug
-              #proc-decam coadd ./repo \"*\" \
-              #  --coadd-subset all \
-              #  --template-type meanclip \
-              #  --warp-coadd-name deep \
-              #  --debug
-            '
+            ghcr.io/${{ github.repository }}:lsst-w_2024_34 /bin/bash /tmp/pipeline.sh
