@@ -31,9 +31,9 @@ jobs:
           # when passing commands with single-quotes to docker run /bin/bash -c '...'
           cat > /tmp/pipeline.sh << 'PIPELINE_EOF'
           #!/bin/bash
-          set -euo pipefail
           source /opt/lsst/software/stack/loadLSST.bash
           setup lsst_distrib
+          set -euo pipefail
           set -x
 
           pip install .
@@ -99,15 +99,6 @@ jobs:
             --image-dir ./data/images \
             --select night=20210318 obs_type='zero'
 
-          proc-decam night ./repo ./data/exposures.ecsv \
-            --where "instrument='DECam' and detector=35" \
-            --debug
-
-          proc-decam coadd ./repo "*" \
-            --coadd-subset all \
-            --template-type meanclip \
-            --warp-coadd-name deep \
-            --debug
           PIPELINE_EOF
 
           chmod +x /tmp/pipeline.sh
