@@ -60,6 +60,8 @@ jobs:
             custom-lsst:latest /bin/bash -c "
               source /opt/lsst/software/stack/loadLSST.bash
               setup lsst_distrib
+
+              set -x
               
               pip install .
               
@@ -75,32 +77,36 @@ jobs:
 
               proc-decam db create ./repo
               proc-decam db start ./repo
-              {
-                butler register-instrument ./repo lsst.obs.decam.DarkEnergyCamera
-                butler write-curated-calibrations ./repo lsst.obs.decam.DarkEnergyCamera
-              } &
-              {
-                butler register-skymap ./repo -c name='discrete'
-              } &
-              {
-                proc-decam refcats ./repo ./data/exposures.ecsv
-              } &
-              {
-                cd kbmod_imdiff_recipe/trimmedRawData/fakes
-                git checkout stetzler/add-band-to-fakes
-                python create_fakes.py
-                cd ../../..
-                proc-decam fakes ./repo \
-                  kbmod_imdiff_recipe/trimmedRawData/fakes/fakes_fakeSrcCat.fits \
-                  --format fits
-              } &
-              wait
-              proc-decam night ./repo ./data/exposures.ecsv \
-                --where \"instrument='DECam' and detector=35\" \
-                --debug
-              proc-decam coadd ./repo \"*\" \
-                --coadd-subset all \
-                --template-type meanclip \
-                --warp-coadd-name deep \
-                --debug
+              
+              butler register-instrument ./repo lsst.obs.decam.DarkEnergyCamera
+              butler write-curated-calibrations ./repo lsst.obs.decam.DarkEnergyCamera
+              
+              butler register-skymap ./repo -c name='discrete'
+              
+              proc-decam refcats ./repo ./data/exposures.ecsv
+              
+              cd kbmod_imdiff_recipe/trimmedRawData/fakes
+              git checkout stetzler/add-band-to-fakes
+              python create_fakes.py
+              cd ../../..
+              
+              proc-decam fakes ./repo \
+                kbmod_imdiff_recipe/trimmedRawData/fakes/fakes_fakeSrcCat.fits \
+                --format fits
+
+              ls .
+              ls /home/lsst
+              ls /home/lsst/work
+              ls /home/lsst/work/data
+              ls /home/lsst/work/data/images
+              proc-decam ingest ./data/exposures.ecsv -b ./repo --image-dir ./data/images --select night=20210318 obs_type='zero'
+              
+              #proc-decam night ./repo ./data/exposures.ecsv \
+              #  --where \"instrument='DECam' and detector=35\" \
+              #  --debug
+              #proc-decam coadd ./repo \"*\" \
+              #  --coadd-subset all \
+              #  --template-type meanclip \
+              #  --warp-coadd-name deep \
+              #  --debug
             "
