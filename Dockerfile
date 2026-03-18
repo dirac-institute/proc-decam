@@ -1,10 +1,12 @@
 FROM lsstsqre/centos:7-stack-lsst_distrib-w_2024_34
-
 USER root
+# install packages
+RUN yum -y install curl ca-certificates && yum clean all && \
+    update-ca-trust force-enable || true && \
+    curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.rpm.sh | bash && \
+    yum -y install git-lfs && \
+    git lfs install --system
+RUN yum -y install postgresql-server postgresql-contrib && yum clean all
 
-# Install PostgreSQL server and client tools
-RUN yum install -y postgresql-server postgresql-contrib && yum clean all
-
-# Revert to the default LSST stack user so the image does not run as root by default
 USER lsst
 WORKDIR /home/lsst
