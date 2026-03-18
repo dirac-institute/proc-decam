@@ -34,6 +34,7 @@ jobs:
           repository: dirac-institute/kbmod_imdiff_recipe
           path: kbmod_imdiff_recipe
           lfs: true
+          ref: main
 
       - name: Checkout kbmod_mastercals_recipe (with LFS)
         uses: actions/checkout@v4
@@ -41,7 +42,8 @@ jobs:
           repository: dirac-institute/kbmod_mastercals_recipe
           path: kbmod_mastercals_recipe
           lfs: true
-
+          ref: stetzler/add-band-to-fakes
+          
       - name: Run pipeline
         shell: bash
         run: |
@@ -67,19 +69,30 @@ jobs:
           su -s /bin/bash lsst -c "source /opt/lsst/software/stack/loadLSST.bash; setup lsst_distrib; set -xeuo pipefail; cd '$WORKSPACE'; proc-decam db create ./repo; proc-decam db start ./repo"
 
           butler register-instrument ./repo lsst.obs.decam.DarkEnergyCamera
-          butler write-curated-calibrations ./repo lsst.obs.decam.DarkEnergyCamera
 
-          butler register-skymap ./repo -c name='discrete'
-
-          proc-decam refcats ./repo ./data/exposures.ecsv
-
-          pushd kbmod_imdiff_recipe/trimmedRawData/fakes
-          git checkout stetzler/add-band-to-fakes
-          python create_fakes.py
-          popd
-
-          proc-decam fakes ./repo \
-            kbmod_imdiff_recipe/trimmedRawData/fakes/fakes_fakeSrcCat.fits \
-            --format fits
-
-          proc-decam ingest ./data/exposures.ecsv -b ./repo --image-dir ./data/images --select night=20210318 obs_type='zero'
+          # ingest calibrations
+          butler write-curated-calibrations ./repo lsst.obs.decam.DarkEnergyCamera & sleep 1
+          # register skymap
+          butler register-skymap ./repo -c name='discrete' & sleep 1
+          # ingest reference catalogs
+          proc-decam refcats ./repo ./data/exposures.ecsv & sleep 1
+          # ingest fakes
+          {
+            pushd kbmod_imdiff_recipe/trimmedRawData/fakes
+            python create_fakes.py
+            popd
+  
+            proc-decam fakes ./repo \
+              kbmod_imdiff_recipe/trimmedRawData/fakes/fakes_fakeSrcCat.fits \
+              --format fits
+          } & sleep 1
+          
+          # ingest defects
+          proc-decam defects ./repo ./data/bpm & sleep 1
+          
+          # ingest bias frames
+          proc-decam ingest ./data/exposures.ecsv \
+            -b ./repo --image-dir ./data/images --select night=20210318 obs_type='zero' & sleep 1
+          
+          wait
+          
