@@ -1,0 +1,79 @@
+name: Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/checkout@v4
+
+      - name: Run pipeline
+        shell: bash
+        run: |
+          chmod -R a+rw .
+          docker run --rm \
+            -v $GITHUB_WORKSPACE:/home/lsst/work \
+            -w /home/lsst/work \
+            ghcr.io/${{ github.repository }}:lsst-w_2024_34 /bin/bash -c "
+              source /opt/lsst/software/stack/loadLSST.bash
+              setup lsst_distrib
+
+              set -x
+
+              pip install .
+
+              git clone https://github.com/dirac-institute/kbmod_imdiff_recipe.git &
+              git clone https://github.com/dirac-institute/kbmod_mastercals_recipe.git &
+              wait
+
+              python tests/make_exposures.py \
+                --mastercals-dir kbmod_mastercals_recipe/trimmedRawData/210318/calib \
+                --science-dir kbmod_imdiff_recipe/trimmedRawData/210318/science \
+                --output ./data/exposures.ecsv \
+                --image-dir ./data/images
+
+              proc-decam db create ./repo
+              proc-decam db start ./repo
+
+              butler register-instrument ./repo lsst.obs.decam.DarkEnergyCamera
+              butler write-curated-calibrations ./repo lsst.obs.decam.DarkEnergyCamera
+
+              butler register-skymap ./repo -c name='discrete'
+
+              proc-decam refcats ./repo ./data/exposures.ecsv
+
+              cd kbmod_imdiff_recipe/trimmedRawData/fakes
+              git checkout stetzler/add-band-to-fakes
+              python create_fakes.py
+              cd ../../..
+
+              proc-decam fakes ./repo \
+                kbmod_imdiff_recipe/trimmedRawData/fakes/fakes_fakeSrcCat.fits \
+                --format fits
+
+              proc-decam ingest ./data/exposures.ecsv -b ./repo --image-dir ./data/images --select night=20210318 obs_type='zero'
+
+              #proc-decam night ./repo ./data/exposures.ecsv \
+              #  --where \"instrument='DECam' and detector=35\" \
+              #  --debug
+              #proc-decam coadd ./repo \"*\" \
+              #  --coadd-subset all \
+              #  --template-type meanclip \
+              #  --warp-coadd-name deep \
+              #  --debug
+            "
