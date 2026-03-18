@@ -96,9 +96,11 @@ jobs:
               } &
               wait
               proc-decam night ./repo ./data/exposures.ecsv \
-                --where \"instrument='DECam' and detector=35\"
+                --where \"instrument='DECam' and detector=35\" \
+                --debug
               proc-decam coadd ./repo \"*\" \
                 --coadd-subset all \
                 --template-type meanclip \
-                --warp-coadd-name deep
+                --warp-coadd-name deep \
+                --debug
             "
