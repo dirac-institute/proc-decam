@@ -7,47 +7,19 @@ on:
 
 permissions:
   contents: read
+  packages: read
 
 jobs:
-  build-image:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create Custom Dockerfile
-        run: |
-          cat <<EOF > Dockerfile
-          FROM lsstsqre/centos:7-stack-lsst_distrib-w_2024_34
-          USER root
-          RUN yum install -y postgresql-server postgresql-contrib && yum clean all
-          # Revert to the default stack user (usually 'lsst') 
-          # so subsequent jobs don't run as root by default.
-          USER lsst
-          WORKDIR /home/lsst
-          EOF
-
-      - name: Build and Save Image
-        run: |
-          docker build -t custom-lsst:latest .
-          docker save custom-lsst:latest > custom-lsst.tar
-
-      - name: Upload Image Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: lsst-image
-          path: custom-lsst.tar
-          retention-days: 1
-
   integration-test:
-    needs: build-image
     runs-on: ubuntu-latest
     steps:
-      - name: Download Image Artifact
-        uses: actions/download-artifact@v4
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
         with:
-          name: lsst-image
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Load Image into Docker
-        run: docker load < custom-lsst.tar
-    
       - uses: actions/checkout@v4
 
       - name: Run pipeline
@@ -57,14 +29,14 @@ jobs:
           docker run --rm \
             -v $GITHUB_WORKSPACE:/home/lsst/work \
             -w /home/lsst/work \
-            custom-lsst:latest /bin/bash -c "
+            ghcr.io/${{ github.repository }}:lsst-w_2024_34 /bin/bash -c "
               source /opt/lsst/software/stack/loadLSST.bash
               setup lsst_distrib
 
               set -x
-              
+
               pip install .
-              
+
               git clone https://github.com/dirac-institute/kbmod_imdiff_recipe.git &
               git clone https://github.com/dirac-institute/kbmod_mastercals_recipe.git &
               wait
@@ -77,19 +49,19 @@ jobs:
 
               proc-decam db create ./repo
               proc-decam db start ./repo
-              
+
               butler register-instrument ./repo lsst.obs.decam.DarkEnergyCamera
               butler write-curated-calibrations ./repo lsst.obs.decam.DarkEnergyCamera
-              
+
               butler register-skymap ./repo -c name='discrete'
-              
+
               proc-decam refcats ./repo ./data/exposures.ecsv
-              
+
               cd kbmod_imdiff_recipe/trimmedRawData/fakes
               git checkout stetzler/add-band-to-fakes
               python create_fakes.py
               cd ../../..
-              
+
               proc-decam fakes ./repo \
                 kbmod_imdiff_recipe/trimmedRawData/fakes/fakes_fakeSrcCat.fits \
                 --format fits
