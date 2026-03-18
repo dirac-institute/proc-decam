@@ -40,6 +40,44 @@ jobs:
               git clone https://github.com/dirac-institute/kbmod_imdiff_recipe.git &
               git clone https://github.com/dirac-institute/kbmod_mastercals_recipe.git &
               wait
+              ( cd kbmod_imdiff_recipe && git lfs fetch && git lfs checkout )
+              ( cd kbmod_mastercals_recipe && git lfs fetch && git lfs checkout )
+              
+              # After LFS checkout, ensure there are no LFS pointers left for the patterns you care about
+              for repo in kbmod_imdiff_recipe kbmod_mastercals_recipe; do
+                echo "=== LFS status in $repo ==="
+                (cd "$repo" && git lfs status || true)
+              
+                # show any pointer files still present (should print nothing)
+                echo "=== Potential LFS pointer files in $repo (should be empty) ==="
+                (cd "$repo" && git lfs ls-files | awk '{print $3}' | while read -r f; do
+                    # If the file is still a pointer, it will contain the spec line
+                    if [ -f "$f" ] && head -n 1 "$f" | grep -q "git-lfs.github.com/spec"; then
+                      echo "POINTER: $repo/$f"
+                      head -n 3 "$f"
+                    fi
+                  done)
+              done
+
+              python - <<'PY'
+              import glob
+              from astropy.io import fits
+              
+              paths = glob.glob("kbmod_mastercals_recipe/trimmedRawData/210318/calib/*zri.fits.fz") + \
+                      glob.glob("kbmod_mastercals_recipe/trimmedRawData/210318/calib/*fri.fits.fz")
+              
+              print("N files:", len(paths))
+              for p in paths:
+                  print("\n===", p, "===")
+                  try:
+                      with fits.open(p) as hdul:
+                          print("HDU len:", len(hdul))
+                          print("Primary keys:", list(hdul[0].header.keys())[:10])
+                  except Exception as e:
+                      print("FAILED:", repr(e))
+              PY
+
+              ( cd kbmod_imdiff_recipe/trimmedRawData/fakes && checkout stetzler/add-band-to-fakes && python create_fakes.py )
 
               python tests/make_exposures.py \
                 --mastercals-dir kbmod_mastercals_recipe/trimmedRawData/210318/calib \
@@ -57,11 +95,6 @@ jobs:
 
               proc-decam refcats ./repo ./data/exposures.ecsv
 
-              cd kbmod_imdiff_recipe/trimmedRawData/fakes
-              git checkout stetzler/add-band-to-fakes
-              python create_fakes.py
-              cd ../../..
-
               proc-decam fakes ./repo \
                 kbmod_imdiff_recipe/trimmedRawData/fakes/fakes_fakeSrcCat.fits \
                 --format fits
@@ -72,7 +105,10 @@ jobs:
               ls /home/lsst/work/data
               ls /home/lsst/work/data/images
               ls -l /home/lsst/work/data/images
-              fitsheader -e 0 /home/lsst/work/data/images/*
+              fitsheader -e 0 /home/lsst/work/data/images/*_zri.fits.fz
+              fitsheader -e 0 /home/lsst/work/data/images/*_fri.fits.fz
+              fitsheader -e 0 /home/lsst/work/data/images/*_ori.fits.fz
+              
               proc-decam ingest ./data/exposures.ecsv -b ./repo --image-dir ./data/images --select night=20210318 obs_type='zero'
               
               #proc-decam night ./repo ./data/exposures.ecsv \
