@@ -99,6 +99,8 @@ jobs:
               ls /home/lsst/work
               ls /home/lsst/work/data
               ls /home/lsst/work/data/images
+              ls -l /home/lsst/work/data/images
+              fitsheader -e 0 /home/lsst/work/data/images/*
               proc-decam ingest ./data/exposures.ecsv -b ./repo --image-dir ./data/images --select night=20210318 obs_type='zero'
               
               #proc-decam night ./repo ./data/exposures.ecsv \
