@@ -70,8 +70,11 @@ jobs:
 
           butler register-instrument ./repo lsst.obs.decam.DarkEnergyCamera
 
-          # ingest calibrations
-          butler write-curated-calibrations ./repo lsst.obs.decam.DarkEnergyCamera & sleep 1
+          # ingest calibrations and defects
+          {
+            butler write-curated-calibrations ./repo lsst.obs.decam.DarkEnergyCamera
+            proc-decam defects ./repo ./data/bpm
+          } & sleep 1
           # register skymap
           butler register-skymap ./repo -c name='discrete' & sleep 1
           # ingest reference catalogs
@@ -87,12 +90,9 @@ jobs:
               --format fits
           } & sleep 1
           
-          # ingest defects
-          proc-decam defects ./repo ./data/bpm & sleep 1
-          
-          # ingest bias frames
-          proc-decam ingest ./data/exposures.ecsv \
-            -b ./repo --image-dir ./data/images --select night=20210318 obs_type='zero' & sleep 1
-          
           wait
+          
+          # process nightly calibrations and exposures with parallelism 1
+          J=1 proc-decam night ./repo ./data/exposures.ecsv \
+            --where "instrument='DECam' and detector=35" -J 1
           
