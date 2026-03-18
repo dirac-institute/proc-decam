@@ -20,7 +20,26 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/checkout@v4
+      # Checkout this repo. Enable Git LFS so LFS-tracked test data are available.
+      - name: Checkout proc-decam (with LFS)
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      # Checkout the two recipe repos into subdirectories, also with LFS.
+      - name: Checkout kbmod_imdiff_recipe (with LFS)
+        uses: actions/checkout@v4
+        with:
+          repository: dirac-institute/kbmod_imdiff_recipe
+          path: kbmod_imdiff_recipe
+          lfs: true
+
+      - name: Checkout kbmod_mastercals_recipe (with LFS)
+        uses: actions/checkout@v4
+        with:
+          repository: dirac-institute/kbmod_mastercals_recipe
+          path: kbmod_mastercals_recipe
+          lfs: true
 
       - name: Run pipeline
         shell: bash
@@ -36,10 +55,6 @@ jobs:
               set -x
 
               pip install .
-
-              git clone https://github.com/dirac-institute/kbmod_imdiff_recipe.git &
-              git clone https://github.com/dirac-institute/kbmod_mastercals_recipe.git &
-              wait
 
               python tests/make_exposures.py \
                 --mastercals-dir kbmod_mastercals_recipe/trimmedRawData/210318/calib \
@@ -69,9 +84,9 @@ jobs:
               proc-decam ingest ./data/exposures.ecsv -b ./repo --image-dir ./data/images --select night=20210318 obs_type='zero'
 
               #proc-decam night ./repo ./data/exposures.ecsv \
-              #  --where \"instrument='DECam' and detector=35\" \
+              #  --where "instrument='DECam' and detector=35" \
               #  --debug
-              #proc-decam coadd ./repo \"*\" \
+              #proc-decam coadd ./repo "*" \
               #  --coadd-subset all \
               #  --template-type meanclip \
               #  --warp-coadd-name deep \
