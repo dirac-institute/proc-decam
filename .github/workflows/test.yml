@@ -18,6 +18,9 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+      # Override Dockerfile's USER lsst so checkout actions can write to runner
+      # directories (/__w/_temp/_runner_file_commands/) which are owned by root.
+      options: --user root
 
     steps:
       - name: Checkout proc-decam (with LFS)
@@ -56,8 +59,12 @@ jobs:
             --output ./data/exposures.ecsv \
             --image-dir ./data/images
 
-          proc-decam db create ./repo
-          proc-decam db start ./repo
+          # initdb and pg_ctl cannot run as root; switch to lsst user for db setup.
+          # Give lsst user write access to the repo directory.
+          mkdir -p ./repo
+          chown lsst:lsst ./repo
+          WORKSPACE="$(pwd)"
+          su -s /bin/bash lsst -c "source /opt/lsst/software/stack/loadLSST.bash; setup lsst_distrib; set -xeuo pipefail; cd '$WORKSPACE'; proc-decam db create ./repo; proc-decam db start ./repo"
 
           butler register-instrument ./repo lsst.obs.decam.DarkEnergyCamera
           butler write-curated-calibrations ./repo lsst.obs.decam.DarkEnergyCamera
