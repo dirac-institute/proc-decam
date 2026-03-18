@@ -34,7 +34,7 @@ jobs:
           repository: dirac-institute/kbmod_imdiff_recipe
           path: kbmod_imdiff_recipe
           lfs: true
-          ref: main
+          ref: stetzler/add-band-to-fakes
 
       - name: Checkout kbmod_mastercals_recipe (with LFS)
         uses: actions/checkout@v4
@@ -42,7 +42,7 @@ jobs:
           repository: dirac-institute/kbmod_mastercals_recipe
           path: kbmod_mastercals_recipe
           lfs: true
-          ref: stetzler/add-band-to-fakes
+          ref: main
           
       - name: Run pipeline
         shell: bash
