@@ -40,25 +40,29 @@ jobs:
               git clone https://github.com/dirac-institute/kbmod_imdiff_recipe.git &
               git clone https://github.com/dirac-institute/kbmod_mastercals_recipe.git &
               wait
-              ( cd kbmod_imdiff_recipe && git lfs fetch && git lfs checkout )
-              ( cd kbmod_mastercals_recipe && git lfs fetch && git lfs checkout )
               
-              # After LFS checkout, ensure there are no LFS pointers left for the patterns you care about
-              for repo in kbmod_imdiff_recipe kbmod_mastercals_recipe; do
-                echo "=== LFS status in $repo ==="
-                (cd "$repo" && git lfs status || true)
+              pushd kbmod_imdiff_recipe
+              git lfs fetch && git lfs checkout
+              popd
+              pushd kbmod_mastercals_recipe
+              git lfs fetch && git lfs checkout
+              popd
               
-                # show any pointer files still present (should print nothing)
-                echo "=== Potential LFS pointer files in $repo (should be empty) ==="
-                (cd "$repo" && git lfs ls-files | awk '{print $3}' | while read -r f; do
-                    # If the file is still a pointer, it will contain the spec line
-                    if [ -f "$f" ] && head -n 1 "$f" | grep -q "git-lfs.github.com/spec"; then
-                      echo "POINTER: $repo/$f"
-                      head -n 3 "$f"
-                    fi
-                  done)
+              caldir="kbmod_mastercals_recipe/trimmedRawData/210318/calib"
+              
+              echo "=== sizes/types of suspect files ==="
+              ls -lh "$caldir"/*zri.fits.fz "$caldir"/*fri.fits.fz || true
+              file "$caldir"/*zri.fits.fz "$caldir"/*fri.fits.fz || true
+              
+              echo "=== detect LFS pointers (should print nothing) ==="
+              grep -RIl --null "git-lfs.github.com/spec" "$caldir" | tr '\0' '\n' || true
+              
+              echo "=== show first 2 lines (if you see 'version https://git-lfs...' it's a pointer; if HTML, it's an error page) ==="
+              for f in "$caldir"/*zri.fits.fz "$caldir"/*fri.fits.fz; do
+                echo "--- $f ---"
+                head -n 2 "$f" || true
               done
-
+              
               python - <<'PY'
               import glob
               from astropy.io import fits
@@ -77,7 +81,9 @@ jobs:
                       print("FAILED:", repr(e))
               PY
 
-              ( cd kbmod_imdiff_recipe/trimmedRawData/fakes && checkout stetzler/add-band-to-fakes && python create_fakes.py )
+              pushd kbmod_imdiff_recipe/trimmedRawData/fakes
+              git checkout stetzler/add-band-to-fakes && python create_fakes.py
+              popd
 
               python tests/make_exposures.py \
                 --mastercals-dir kbmod_mastercals_recipe/trimmedRawData/210318/calib \
