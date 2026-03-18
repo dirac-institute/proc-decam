@@ -29,7 +29,7 @@ jobs:
           docker run --rm \
             -v $GITHUB_WORKSPACE:/home/lsst/work \
             -w /home/lsst/work \
-            ghcr.io/${{ github.repository }}:lsst-w_2024_34 /bin/bash -c "
+            ghcr.io/${{ github.repository }}:lsst-w_2024_34 /bin/bash -c '
               source /opt/lsst/software/stack/loadLSST.bash
               setup lsst_distrib
 
@@ -57,7 +57,7 @@ jobs:
               echo "=== detect LFS pointers (should print nothing) ==="
               grep -RIl --null "git-lfs.github.com/spec" "$caldir" | tr '\0' '\n' || true
               
-              echo "=== show first 2 lines (if you see 'version https://git-lfs...' it's a pointer; if HTML, it's an error page) ==="
+              echo "=== show first 2 lines (if you see version https://git-lfs... it's a pointer; if HTML, it's an error page) ==="
               for f in "$caldir"/*zri.fits.fz "$caldir"/*fri.fits.fz; do
                 echo "--- $f ---"
                 head -n 2 "$f" || true
@@ -79,7 +79,7 @@ jobs:
               butler register-instrument ./repo lsst.obs.decam.DarkEnergyCamera
               butler write-curated-calibrations ./repo lsst.obs.decam.DarkEnergyCamera
 
-              butler register-skymap ./repo -c name='discrete'
+              butler register-skymap ./repo -c name="discrete"
 
               proc-decam refcats ./repo ./data/exposures.ecsv
 
@@ -107,4 +107,4 @@ jobs:
               #  --template-type meanclip \
               #  --warp-coadd-name deep \
               #  --debug
-            "
+            '
