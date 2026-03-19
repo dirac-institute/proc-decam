@@ -18,14 +18,13 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-      # Override Dockerfile's USER lsst so checkout actions can write to runner
-      # directories (/__w/_temp/_runner_file_commands/) which are owned by root.
       options: --user root
 
     steps:
       - name: Checkout proc-decam (with LFS)
         uses: actions/checkout@v4
         with:
+          path: proc_decam
           lfs: true
 
       - name: Checkout kbmod_imdiff_recipe (with LFS)
@@ -34,7 +33,7 @@ jobs:
           repository: dirac-institute/kbmod_imdiff_recipe
           path: kbmod_imdiff_recipe
           lfs: true
-          ref: stetzler/add-band-to-fakes
+          ref: main
 
       - name: Checkout kbmod_mastercals_recipe (with LFS)
         uses: actions/checkout@v4
@@ -47,38 +46,49 @@ jobs:
       - name: Run pipeline
         shell: bash
         run: |
-          # Load LSST stack from the container image
           source /opt/lsst/software/stack/loadLSST.bash
           setup lsst_distrib
-
           set -xeuo pipefail
+          
+          # install checked out software
+          python -m pip install ${WORK}/proc_decam
+          
+          # change ownership of work directory
+          chown -R lsst:lsst ${WORK}
 
-          python tests/make_exposures.py \
-            --mastercals-dir kbmod_mastercals_recipe/trimmedRawData/210318/calib \
-            --science-dir kbmod_imdiff_recipe/trimmedRawData/210318/science \
+          # switch to lsst user
+          su lsst <<EOF
+            source /opt/lsst/software/stack/loadLSST.bash
+            setup lsst_distrib
+            set -xeuo pipefail
+
+            # set up data
+            python ${WORK}/proc_decam/tests/make_exposures.py \
+            --mastercals-dir ${WORK}/kbmod_mastercals_recipe/trimmedRawData/210318/calib \
+            --science-dir ${WORK}/kbmod_imdiff_recipe/trimmedRawData/210318/science \
             --output ${DATA}/exposures.ecsv \
             --image-dir ${DATA}/images
 
-          su -s /bin/bash lsst -c "source /opt/lsst/software/stack/loadLSST.bash; setup lsst_distrib; set -xeuo pipefail; proc-decam db start ${REPO}"
+            # start repo
+            proc-decam db start ${REPO}
+            
+            # Ingest refcats
+            proc-decam refcats ${REPO} ${DATA}/exposures.ecsv
+            
+            # ingest fakes
+            cd ${WORK}/kbmod_imdiff_recipe/trimmedRawData/fakes
+            python create_fakes.py
+            cd ${WORK}
+            
+            proc-decam fakes ${REPO} \
+              ${WORK}/kbmod_imdiff_recipe/trimmedRawData/fakes/fakes_fakeSrcCat.fits \
+              --format fits
 
-          # ingest reference catalogs
-          pushd $(dirname ${DATA}); proc-decam refcats ${REPO} ${DATA}/exposures.ecsv; popd
-          
-          # ingest fakes
-          pushd kbmod_imdiff_recipe/trimmedRawData/fakes
-          python create_fakes.py
-          popd
-          proc-decam fakes ${REPO} \
-            kbmod_imdiff_recipe/trimmedRawData/fakes/fakes_fakeSrcCat.fits \
-            --format fits
-
-          proc-decam ingest ${DATA}/exposures.ecsv -b ${REPO} --image-dir ${DATA}/images/
-          proc-decam raw ${REPO} bias 20210318
-          proc-decam collection ${REPO} bias 20210318
-          proc-decam execute ${REPO} 20210318/bias \
-            --pipeline pipelines/bias.yaml#step1 \
-            --where "instrument='DECam' and detector=35"
-          # process nightly calibrations and exposures with parallelism 1
-          # J=1 proc-decam night ${REPO} ${DATA}/exposures.ecsv \
-          #  --where "instrument='DECam' and detector=35" -J 1
-          
+            # ingest and process bias
+            proc-decam ingest ${DATA}/exposures.ecsv -b ${REPO} --image-dir ${DATA}/images/
+            proc-decam raw ${REPO} bias 20210318
+            proc-decam collection ${REPO} bias 20210318
+            proc-decam execute ${REPO} 20210318/bias \
+              --pipeline ${WORK}/proc_decam/pipelines/bias.yaml#step1 \
+              --where "instrument='DECam' and detector=35"
+          EOF          
