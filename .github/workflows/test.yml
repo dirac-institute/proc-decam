@@ -74,8 +74,14 @@ jobs:
           proc-decam fakes ${REPO} \
             kbmod_imdiff_recipe/trimmedRawData/fakes/fakes_fakeSrcCat.fits \
             --format fits
-                    
+
+          proc-decam ingest ${DATA}/exposures.ecsv -b ${REPO} --image-dir ${DATA}/images/
+          proc-decam raw ${REPO} bias 20210318
+          proc-decam collection ${REPO} bias 20210318
+          proc-decam execute ${REPO} 20210318/bias \
+            --pipeline pipelines/bias.yaml#step1 \
+            --where "instrument='DECam' and detector=35"
           # process nightly calibrations and exposures with parallelism 1
-          J=1 proc-decam night ${REPO} ${DATA}/exposures.ecsv \
-            --where "instrument='DECam' and detector=35" -J 1
+          # J=1 proc-decam night ${REPO} ${DATA}/exposures.ecsv \
+          #  --where "instrument='DECam' and detector=35" -J 1
           
