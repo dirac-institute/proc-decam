@@ -52,11 +52,12 @@ jobs:
           setup lsst_distrib
 
           set -xeuo pipefail
+          cd /home/lsst
 
           python tests/make_exposures.py \
             --mastercals-dir kbmod_mastercals_recipe/trimmedRawData/210318/calib \
             --science-dir kbmod_imdiff_recipe/trimmedRawData/210318/science \
-            --output ./data/exposures.ecsv \
+            --output ${DATA}/exposures.ecsv \
             --image-dir ${DATA}/images
 
           # initdb and pg_ctl cannot run as root; switch to lsst user for db setup.
