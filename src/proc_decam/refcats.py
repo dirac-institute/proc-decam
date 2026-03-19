@@ -52,6 +52,7 @@ def main():
     import argparse
     import astropy.table
     import os
+    from pathlib import Path
     from subprocess import Popen
 
     parser = argparse.ArgumentParser()
@@ -72,8 +73,9 @@ def main():
         register = popen(cmd)
         register.wait()
 
+    data_dir = Path(args.exposures).resolve().parent
     exposures = astropy.table.Table.read(args.exposures)
-    downloaded = astropy.table.Table.read(os.path.join(os.path.dirname(args.exposures), "downloaded_" + os.path.basename(args.exposures)))
+    downloaded = astropy.table.Table.read(data_dir / "downloaded_" + os.path.basename(args.exposures))
     exposures = astropy.table.join(exposures, downloaded, keys=["md5sum"])
     exposures = exposures[
         (
@@ -92,30 +94,36 @@ def main():
         "lsst-refcats",
         "ps1",
         "--import-file",
+        "--output",
+        str(data_dir / "refcats"),
         "-J", "24",
         "--paths",
     ] + list(map(str, paths))
-    with open("data/refcats_ps1.out", "w") as o, open("data/refcats_ps1.err", "w") as e:
+    with open(data_dir / "refcats_ps1.out", "w") as o, open(data_dir / "refcats_ps1.err", "w") as e:
         ps1 = popen(cmd, stdout=o, stderr=e)
     
     cmd = [
         "lsst-refcats",
         "gaia_dr3",
         "--import-file",
+        "--output",
+        str(data_dir / "refcats"),
         "-J", "24",
         "--paths",
     ] + list(map(str, paths))
-    with open("data/refcats_gaia_dr3.out", "w") as o, open("data/refcats_gaia_dr3.err", "w") as e:
+    with open(data_dir / "refcats_gaia_dr3.out", "w") as o, open(data_dir / "refcats_gaia_dr3.err", "w") as e:
         gaia_dr3 = popen(cmd, stdout=o, stderr=e)
     
     cmd = [
         "lsst-refcats",
         "gaia_dr2",
         "--import-file",
+        "--output",
+        str(data_dir / "refcats"),
         "-J", "24",
         "--paths",
     ] + list(map(str, paths))
-    with open("data/refcats_gaia_dr2.out", "w") as o, open("data/refcats_gaia_dr2.err", "w") as e:
+    with open(data_dir / "refcats_gaia_dr2.out", "w") as o, open(data_dir / "refcats_gaia_dr2.err", "w") as e:
         gaia_dr2 = popen(cmd, stdout=o, stderr=e)
     
     ps1.wait()
@@ -129,7 +137,7 @@ def main():
             args.repo,
             dataset,
             f"refcats/{shortname}",
-            f"./data/refcats/{dataset}.ecsv",
+            str(data_dir / "refcats" / f"{dataset}.ecsv"),
         ]
         ingest = popen(cmd)
         ingest.wait()
