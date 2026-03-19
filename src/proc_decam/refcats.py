@@ -51,13 +51,12 @@ def run_and_pipe(*args, **kwargs):
 def main():
     import argparse
     import astropy.table
-    import os
     from pathlib import Path
     from subprocess import Popen
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("repo")
-    parser.add_argument("exposures")
+    parser.add_argument("repo", type=str)
+    parser.add_argument("exposures", type=Path)
 
     args = parser.parse_args()
 
@@ -73,9 +72,9 @@ def main():
         register = popen(cmd)
         register.wait()
 
-    data_dir = Path(args.exposures).resolve().parent
+    data_dir = args.exposures.resolve().parent
     exposures = astropy.table.Table.read(args.exposures)
-    downloaded = astropy.table.Table.read(data_dir / "downloaded_" + os.path.basename(args.exposures))
+    downloaded = astropy.table.Table.read(data_dir / ("downloaded_" + args.exposures.name))
     exposures = astropy.table.join(exposures, downloaded, keys=["md5sum"])
     exposures = exposures[
         (
