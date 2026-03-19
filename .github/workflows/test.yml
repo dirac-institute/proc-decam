@@ -62,7 +62,7 @@ jobs:
           su -s /bin/bash lsst -c "source /opt/lsst/software/stack/loadLSST.bash; setup lsst_distrib; set -xeuo pipefail; proc-decam db start ${REPO}"
 
           # ingest reference catalogs
-          proc-decam refcats ${REPO} ${DATA}/exposures.ecsv
+          pushd $(dirname ${DATA}); proc-decam refcats ${REPO} ${DATA}/exposures.ecsv; popd
           
           # ingest fakes
           pushd kbmod_imdiff_recipe/trimmedRawData/fakes
