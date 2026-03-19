@@ -9,6 +9,7 @@ RUN yum -y install curl ca-certificates && yum clean all && \
 RUN yum -y install postgresql-server postgresql-contrib && yum clean all
 
 USER lsst
+SHELL ["/bin/bash", "-lc"]
 WORKDIR /home/lsst
 RUN source /opt/lsst/software/stack/loadLSST.bash && \
     setup lsst_distrib && \
