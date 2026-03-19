@@ -52,7 +52,6 @@ jobs:
           setup lsst_distrib
 
           set -xeuo pipefail
-          cd /home/lsst
 
           python tests/make_exposures.py \
             --mastercals-dir kbmod_mastercals_recipe/trimmedRawData/210318/calib \
@@ -60,10 +59,7 @@ jobs:
             --output ${DATA}/exposures.ecsv \
             --image-dir ${DATA}/images
 
-          # initdb and pg_ctl cannot run as root; switch to lsst user for db setup.
-          # Give lsst user write access to the repo directory.
-          WORKSPACE="$(pwd)"
-          su -s /bin/bash lsst -c "source /opt/lsst/software/stack/loadLSST.bash; setup lsst_distrib; set -xeuo pipefail; cd '$WORKSPACE'; proc-decam db start ${REPO}"
+          su -s /bin/bash lsst -c "source /opt/lsst/software/stack/loadLSST.bash; setup lsst_distrib; set -xeuo pipefail; proc-decam db start ${REPO}"
 
           # ingest reference catalogs
           proc-decam refcats ${REPO} ${DATA}/exposures.ecsv
