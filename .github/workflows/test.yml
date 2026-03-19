@@ -94,4 +94,4 @@ jobs:
             proc-decam execute ${REPO} 20210318/bias \
               --pipeline pipelines/bias.yaml#step1 \
               --where "instrument='DECam' and detector=35"
-          EOF          
+EOF          
