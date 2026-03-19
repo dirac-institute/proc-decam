@@ -53,46 +53,29 @@ jobs:
 
           set -xeuo pipefail
 
-          pip install .
-
           python tests/make_exposures.py \
             --mastercals-dir kbmod_mastercals_recipe/trimmedRawData/210318/calib \
             --science-dir kbmod_imdiff_recipe/trimmedRawData/210318/science \
             --output ./data/exposures.ecsv \
-            --image-dir ./data/images
+            --image-dir ${DATA}/images
 
           # initdb and pg_ctl cannot run as root; switch to lsst user for db setup.
           # Give lsst user write access to the repo directory.
-          mkdir -p ./repo
-          chown lsst:lsst ./repo
           WORKSPACE="$(pwd)"
-          su -s /bin/bash lsst -c "source /opt/lsst/software/stack/loadLSST.bash; setup lsst_distrib; set -xeuo pipefail; cd '$WORKSPACE'; proc-decam db create ./repo; proc-decam db start ./repo"
+          su -s /bin/bash lsst -c "source /opt/lsst/software/stack/loadLSST.bash; setup lsst_distrib; set -xeuo pipefail; cd '$WORKSPACE'; proc-decam db start ${REPO}"
 
-          butler register-instrument ./repo lsst.obs.decam.DarkEnergyCamera
-
-          # ingest calibrations and defects
-          {
-            butler write-curated-calibrations ./repo lsst.obs.decam.DarkEnergyCamera
-            proc-decam defects ./repo ./data/bpm
-          } & sleep 1
-          # register skymap
-          butler register-skymap ./repo -c name='discrete' & sleep 1
           # ingest reference catalogs
-          proc-decam refcats ./repo ./data/exposures.ecsv & sleep 1
+          proc-decam refcats ${REPO} ${DATA}/exposures.ecsv
+          
           # ingest fakes
-          {
-            pushd kbmod_imdiff_recipe/trimmedRawData/fakes
-            python create_fakes.py
-            popd
-  
-            proc-decam fakes ./repo \
-              kbmod_imdiff_recipe/trimmedRawData/fakes/fakes_fakeSrcCat.fits \
-              --format fits
-          } & sleep 1
-          
-          wait
-          
+          pushd kbmod_imdiff_recipe/trimmedRawData/fakes
+          python create_fakes.py
+          popd
+          proc-decam fakes ${REPO} \
+            kbmod_imdiff_recipe/trimmedRawData/fakes/fakes_fakeSrcCat.fits \
+            --format fits
+                    
           # process nightly calibrations and exposures with parallelism 1
-          J=1 proc-decam night ./repo ./data/exposures.ecsv \
+          J=1 proc-decam night ${REPO} ${DATA}/exposures.ecsv \
             --where "instrument='DECam' and detector=35" -J 1
           
