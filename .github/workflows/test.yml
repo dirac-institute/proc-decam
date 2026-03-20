@@ -27,7 +27,15 @@ jobs:
           path: proc_decam
           lfs: true
 
-      - name: Checkout kbmod_imdiff_recipe (with LFS)
+      - name: Cache LFS for kbmod_imdiff_recipe
+        uses: actions/cache@v4
+        with:
+          path: kbmod_imdiff_recipe/.git/lfs
+          key: ${{ runner.os }}-lfs-imdiff-${{ hashFiles('kbmod_imdiff_recipe/.gitattributes') }}
+          restore-keys: |
+            ${{ runner.os }}-lfs-imdiff-
+
+      - name: Checkout kbmod_imdiff_recipe
         uses: actions/checkout@v4
         with:
           repository: dirac-institute/kbmod_imdiff_recipe
@@ -35,14 +43,22 @@ jobs:
           lfs: true
           ref: main
 
-      - name: Checkout kbmod_mastercals_recipe (with LFS)
+      - name: Cache LFS for kbmod_mastercals_recipe
+        uses: actions/cache@v4
+        with:
+          path: kbmod_mastercals_recipe/.git/lfs
+          key: ${{ runner.os }}-lfs-mastercals-${{ hashFiles('kbmod_mastercals_recipe/.gitattributes') }}
+          restore-keys: |
+            ${{ runner.os }}-lfs-mastercals-
+
+      - name: Checkout kbmod_mastercals_recipe
         uses: actions/checkout@v4
         with:
           repository: dirac-institute/kbmod_mastercals_recipe
           path: kbmod_mastercals_recipe
           lfs: true
           ref: main
-
+        
       - name: Run pipeline
         shell: bash
         run: |
