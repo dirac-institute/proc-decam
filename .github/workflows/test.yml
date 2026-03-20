@@ -12,83 +12,66 @@ permissions:
 jobs:
   integration-test:
     runs-on: ubuntu-latest
-    steps:
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Checkout this repo. Enable Git LFS so LFS-tracked test data are available.
+    container:
+      image: ghcr.io/${{ github.repository }}:lsst-w_2024_34
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+      options: --user root
+
+    steps:
       - name: Checkout proc-decam (with LFS)
         uses: actions/checkout@v4
         with:
+          path: proc_decam
           lfs: true
 
-      # Checkout the two recipe repos into subdirectories, also with LFS.
-      - name: Checkout kbmod_imdiff_recipe (with LFS)
+      - name: Cache LFS for kbmod_imdiff_recipe
+        uses: actions/cache@v4
+        with:
+          path: kbmod_imdiff_recipe/.git/lfs
+          key: ${{ runner.os }}-lfs-imdiff-${{ hashFiles('kbmod_imdiff_recipe/.gitattributes') }}
+          restore-keys: |
+            ${{ runner.os }}-lfs-imdiff-
+
+      - name: Checkout kbmod_imdiff_recipe
         uses: actions/checkout@v4
         with:
           repository: dirac-institute/kbmod_imdiff_recipe
           path: kbmod_imdiff_recipe
           lfs: true
+          ref: main
 
-      - name: Checkout kbmod_mastercals_recipe (with LFS)
+      - name: Cache LFS for kbmod_mastercals_recipe
+        uses: actions/cache@v4
+        with:
+          path: kbmod_mastercals_recipe/.git/lfs
+          key: ${{ runner.os }}-lfs-mastercals-${{ hashFiles('kbmod_mastercals_recipe/.gitattributes') }}
+          restore-keys: |
+            ${{ runner.os }}-lfs-mastercals-
+
+      - name: Checkout kbmod_mastercals_recipe
         uses: actions/checkout@v4
         with:
           repository: dirac-institute/kbmod_mastercals_recipe
           path: kbmod_mastercals_recipe
           lfs: true
-
+          ref: main
+        
       - name: Run pipeline
         shell: bash
         run: |
-          chmod -R a+rw .
-          docker run --rm \
-            -v $GITHUB_WORKSPACE:/home/lsst/work \
-            -w /home/lsst/work \
-            ghcr.io/${{ github.repository }}:lsst-w_2024_34 /bin/bash -c "
-              source /opt/lsst/software/stack/loadLSST.bash
-              setup lsst_distrib
+          source /opt/lsst/software/stack/loadLSST.bash
+          setup lsst_distrib
+          set -xeuo pipefail
 
-              set -x
+          export WORK=$(pwd)
+          # install checked out software
+          python -m pip install ${WORK}/proc_decam
 
-              pip install .
+          # change ownership of work directory
+          chown -R lsst:lsst ${WORK}
 
-              python tests/make_exposures.py \
-                --mastercals-dir kbmod_mastercals_recipe/trimmedRawData/210318/calib \
-                --science-dir kbmod_imdiff_recipe/trimmedRawData/210318/science \
-                --output ./data/exposures.ecsv \
-                --image-dir ./data/images
-
-              proc-decam db create ./repo
-              proc-decam db start ./repo
-
-              butler register-instrument ./repo lsst.obs.decam.DarkEnergyCamera
-              butler write-curated-calibrations ./repo lsst.obs.decam.DarkEnergyCamera
-
-              butler register-skymap ./repo -c name='discrete'
-
-              proc-decam refcats ./repo ./data/exposures.ecsv
-
-              cd kbmod_imdiff_recipe/trimmedRawData/fakes
-              git checkout stetzler/add-band-to-fakes
-              python create_fakes.py
-              cd ../../..
-
-              proc-decam fakes ./repo \
-                kbmod_imdiff_recipe/trimmedRawData/fakes/fakes_fakeSrcCat.fits \
-                --format fits
-
-              proc-decam ingest ./data/exposures.ecsv -b ./repo --image-dir ./data/images --select night=20210318 obs_type='zero'
-
-              #proc-decam night ./repo ./data/exposures.ecsv \
-              #  --where "instrument='DECam' and detector=35" \
-              #  --debug
-              #proc-decam coadd ./repo "*" \
-              #  --coadd-subset all \
-              #  --template-type meanclip \
-              #  --warp-coadd-name deep \
-              #  --debug
-            "
+          # switch to lsst user
+          sudo -u lsst bash ${WORK}/proc_decam/tests/test.bash
