@@ -26,6 +26,11 @@ dependencies = [
 ]
 description = "Process a DECam imaging survey using the LSST Science Pipelines."
 
+[project.optional-dependencies]
+dev = [
+    "pytest",
+]
+
 [project.urls]
 "Source Code" = "https://github.com/stevenstetzler/proc-decam"
 
