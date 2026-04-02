@@ -74,4 +74,4 @@ jobs:
           chown -R lsst:lsst ${WORK}
 
           # switch to lsst user
-          sudo -u lsst bash ${WORK}/proc_decam/tests/test.bash
+          su - lsst -c "WORK='${WORK}' bash ${WORK}/proc_decam/tests/test.bash"
