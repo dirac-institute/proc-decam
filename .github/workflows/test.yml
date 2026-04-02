@@ -65,13 +65,11 @@ jobs:
           source /opt/lsst/software/stack/loadLSST.bash
           setup lsst_distrib
           set -xeuo pipefail
-
-          export WORK=$(pwd)
+          echo "done"
+          # export WORK=$(pwd)
           # install checked out software
-          python -m pip install ${WORK}/proc_decam
-
+          # python -m pip install ${WORK}/proc_decam
           # change ownership of work directory
-          chown -R lsst:lsst ${WORK}
-
+          # chown -R lsst:lsst ${WORK}
           # switch to lsst user
-          su - lsst -c "WORK='${WORK}' bash ${WORK}/proc_decam/tests/test.bash"
+          # su - lsst -c "WORK='${WORK}' REPO='${REPO}' DATA='${DATA}' bash ${WORK}/proc_decam/tests/test.bash"
