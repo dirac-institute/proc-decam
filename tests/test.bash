@@ -28,4 +28,5 @@ proc-decam fakes ${REPO} \
 
 # process night through calibrated exposures
 J=1 proc-decam night ${REPO} ${DATA}/exposures.ecsv --nights 20210318 \
-  --where "instrument='DECam' and detector=35"
+  --where "instrument='DECam' and detector=35" \
+  --debug
