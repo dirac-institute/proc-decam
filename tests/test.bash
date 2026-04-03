@@ -27,6 +27,9 @@ proc-decam fakes ${REPO} \
   --format fits
 
 # process night through calibrated exposures
-J=1 proc-decam night ${REPO} ${DATA}/exposures.ecsv --nights 20210318 \
-  --where "instrument='DECam' and detector=35" \
-  --debug
+# J=1 proc-decam night ${REPO} ${DATA}/exposures.ecsv --nights 20210318 \
+#   --where "instrument='DECam' and detector=35" \
+#   --debug
+proc-decam ingest /home/lsst/data/exposures.ecsv \
+  -b /home/lsst/repo --image-dir ./data/images \
+  --select night=20210318 obs_type='zero'
