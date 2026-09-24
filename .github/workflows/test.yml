@@ -150,4 +150,8 @@ jobs:
                 --format fits
 
               proc-decam ingest ./data/exposures.ecsv -b \$REPO --image-dir ./data/images --select night=20210318 obs_type='zero'
+              proc-decam ingest ./data/exposures.ecsv -b \$REPO --image-dir ./data/images --select night=20210318 obs_type='dome flat'
+              proc-decam ingest ./data/exposures.ecsv -b \$REPO --image-dir ./data/images --select night=20210318 obs_type='object'
+
+              proc-decam refcats \$REPO ./data/exposures.ecsv
             "

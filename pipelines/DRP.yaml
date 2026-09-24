@@ -391,7 +391,6 @@ subsets:
     subset:
     - assembleCoadd # create coadd
     - detection # detect on coadd
-    - measure # measure
   step3c: # patch
     subset:
     - mergeDetections # merge 
