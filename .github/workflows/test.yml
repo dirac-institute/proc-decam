@@ -23,6 +23,7 @@ on:
       - src/proc_decam/fakes.py
       - src/proc_decam/ingest.py
       - tests/make_exposures.py
+  workflow_dispatch:
 
 permissions:
   contents: read
