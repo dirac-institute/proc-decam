@@ -129,8 +129,14 @@ jobs:
           path: pipelines/**/pipeline.pdf
           if-no-files-found: error
 
+      # GitHub always issues a read-only GITHUB_TOKEN for `pull_request` runs
+      # triggered by a fork PR into this repo - the `permissions:` block
+      # above can't override that - so posting a comment would 403 on any
+      # PR from a fork (e.g. one opened against dirac-institute/proc-decam
+      # from a personal fork). Skip it there; the artifact upload above
+      # still runs either way.
       - name: Comment on PR with a link to the visualizations
-        if: steps.changed.outputs.pipelines == 'true'
+        if: steps.changed.outputs.pipelines == 'true' && github.event.pull_request.head.repo.full_name == github.repository
         uses: actions/github-script@v7
         with:
           script: |
