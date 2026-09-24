@@ -1,0 +1,177 @@
+name: Pipeline
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  build-image:
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/build-image.yml
+    with:
+      skip_if_exists: true
+
+  build-pipelines:
+    needs: build-image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+      pull-requests: write
+    steps:
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout proc-decam
+        uses: actions/checkout@v4
+
+      # Whether to publish the visualizations built below: the build itself
+      # always runs (it's the CI check that these pipeline files are valid),
+      # but attaching/linking rendered images is only useful when one of the
+      # files being visualized actually changed in this PR.
+      - name: Check for pipeline file changes
+        uses: dorny/paths-filter@v3
+        id: changed
+        with:
+          list-files: csv
+          filters: |
+            pipelines:
+              - pipelines/flat.yaml
+              - pipelines/bias.yaml
+              - pipelines/DRP.yaml
+
+      # `pipetask build` resolves a pipeline's tasks/configs/connections into
+      # a graph without running anything - no data or butler repo needed.
+      # DRP.yaml references proc_decam's own ApplyDefectsTask, so proc-decam
+      # needs to be installed first for that one to resolve.
+      #
+      # step4a's subset was previously just {getTemplate}, which failed to
+      # resolve in isolation with `KeyError: '<UNKNOWN>'`: subtractImages
+      # (moved to step4b) was its only in-graph consumer, so pipe_base had
+      # nothing to infer that dataset type's storage class from. Keeping
+      # subtractImages in step4a (see DRP.yaml) fixes that without needing a
+      # butler registry at all.
+      #
+      # Uses pipelines/viz-all.sh, which discovers and builds every subset of
+      # flat.yaml, bias.yaml and DRP.yaml via pipelines/viz.sh (the same tool
+      # used for local/manual builds) rather than a whole-file build (which
+      # can fail - e.g. flat.yaml as a whole - even when every subset builds
+      # fine) or a hardcoded subset list (which goes stale as subsets
+      # change). Run via bin/setup.sh so $PROC_DECAM_DIR points at this
+      # checkout and viz.sh's output lands under pipelines/ here rather than
+      # an install location. See viz-all.sh for the excluded/disabled
+      # subsets.
+      #
+      # Everything runs in one `docker run` (one `pip install .`, one
+      # `chmod`) rather than separate steps: `pip install .` leaves build/
+      # and src/proc_decam.egg-info/ behind, owned by the container's
+      # internal user, and a *second* docker-run step's host-side
+      # `chmod -R a+rw .` can't touch those (different uid across the bind
+      # mount) - splitting this into two steps failed on exactly that.
+      #
+      # Renders to pipelines/**/pipeline.{dot,svg,png,jpg,pdf} (gitignored),
+      # currently discarded when the job ends. Publishing these (e.g.
+      # committed to a docs/gh-pages branch for a pipeline preview page) is
+      # scoped out separately.
+      - name: Build pipelines and generate DRP visualizations
+        shell: bash
+        run: |
+          chmod -R a+rw .
+          docker run --rm \
+            --user root \
+            -v $GITHUB_WORKSPACE:/home/lsst/work \
+            -w /home/lsst/work \
+            ghcr.io/${{ github.repository }}:lsst-w_2024_34 /bin/bash -c "
+              set -xe
+
+              # graphviz isn't in the image; only needed here for viz.sh's
+              # \`dot\` calls, so install it at runtime rather than growing
+              # the image for every other job that pulls it. Needs root, so
+              # de-escalate to the image's default lsst user (env preserved
+              # - no \`-\`) for everything else.
+              yum -y install graphviz
+
+              su lsst -c '
+                source /opt/lsst/software/stack/loadLSST.bash
+                setup lsst_distrib
+                source bin/setup.sh
+
+                set -xe
+
+                pip install .
+
+                bash pipelines/viz-all.sh
+              '
+            "
+
+      # GitHub's comment API only accepts Markdown text, not file uploads,
+      # so there's no way to embed the images themselves without a public
+      # URL for them to point at (planned separately, alongside the
+      # docs/gh-pages publishing setup). Until then, link to this run's
+      # workflow artifact instead - only when one of the visualized files
+      # actually changed in this PR.
+      - name: Upload changed pipeline visualizations
+        if: steps.changed.outputs.pipelines == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-visualizations
+          path: pipelines/**/pipeline.pdf
+          if-no-files-found: error
+
+      # GitHub always issues a read-only GITHUB_TOKEN for `pull_request` runs
+      # triggered by a fork PR into this repo - the `permissions:` block
+      # above can't override that - so posting a comment would 403 on any
+      # PR from a fork (e.g. one opened against dirac-institute/proc-decam
+      # from a personal fork). Skip it there; the artifact upload above
+      # still runs either way.
+      - name: Comment on PR with a link to the visualizations
+        if: steps.changed.outputs.pipelines == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = "<!-- pipeline-viz-comment -->";
+            const changedFiles = "${{ steps.changed.outputs.pipelines_files }}".split(",");
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = [
+              marker,
+              "**Pipeline visualizations updated** for:",
+              "",
+              ...changedFiles.map((f) => `- \`${f}\``),
+              "",
+              `Rendered subset diagrams (PDF) are attached to [this workflow run](${runUrl}) under Artifacts.`,
+            ].join("\n");
+
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.data.find((c) => c.body.includes(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
