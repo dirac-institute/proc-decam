@@ -2,7 +2,7 @@
 
 Process a DECam imaging survey using the LSST Science Pipelines.
 
-Install LSST Science Pipelines: https://pipelines.lsst.io/
+Install LSST Science Pipelines: https://pipelines.lsst.io/ (via [lsstinstall](https://pipelines.lsst.io/install/lsstinstall.html))
 - This package has been tested with version `w_2024_34` of the Science Pipelines. 
 - Later version may break compatibility with this package due to the shared dependence on `parsl`, which has a quickly changing API.
 
@@ -16,7 +16,7 @@ $ python -m pip install .
 $ source ./bin/setup.sh
 ```
 
-Create LSST repository:
+Create LSST repository (after loading the LSST Science Pipelines):
 ```bash
 $ butler create ./repo
 $ butler register-instrument ./repo lsst.obs.decam.DarkEnergyCamera
