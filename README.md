@@ -62,11 +62,9 @@ A single (or multiple) night(s) of the survey (or a subset of the data contained
 ```bash
 $ proc-decam night --help
 usage: proc-decam night [-h] [--nights NIGHTS] [--image-dir IMAGE_DIR]
-                        [--proc-types {bias,flat,drp,diff_drp} [{bias,flat,drp,diff_drp} ...]]
-                        [--coadd-subset COADD_SUBSET]
-                        [--template-type TEMPLATE_TYPE] [--where WHERE]
-                        [--log-level LOG_LEVEL] [--slurm] [--pipeline-slurm]
-                        [--provider PROVIDER] [--workers WORKERS] [--debug]
+                        [--proc-types {bias,flat,drp,diff_drp} [{bias,flat,drp,diff_drp} ...]] [--coadd-subset COADD_SUBSET]
+                        [--template-type TEMPLATE_TYPE] [--fakes-collection FAKES_COLLECTION] [--where WHERE]
+                        [--log-level LOG_LEVEL] [--slurm] [--pipeline-slurm] [--provider PROVIDER] [--workers WORKERS] [--debug]
                         repo exposures
 
 positional arguments:
@@ -80,6 +78,8 @@ options:
   --proc-types {bias,flat,drp,diff_drp} [{bias,flat,drp,diff_drp} ...]
   --coadd-subset COADD_SUBSET
   --template-type TEMPLATE_TYPE
+  --fakes-collection FAKES_COLLECTION
+                        Collection holding ingested fakes to inject during drp processing
   --where WHERE
   --log-level LOG_LEVEL
   --slurm
