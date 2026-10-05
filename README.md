@@ -51,7 +51,10 @@ $ proc-decam refcats ./repo ./data/exposures.ecsv
 Ingest fakes:
 ```bash
 $ proc-decam fakes ./repo path/to/fakes.fits # astropy readable table with columns RA/DEC/MAG/BAND/EXPNUM
+$ proc-decam fakes ./repo path/to/fakes.fits --collection my_fakes # ingest into a custom collection (default: fakes)
 ```
+
+To inject fakes from a custom collection, pass it to processing with `--fakes-collection` (e.g. `proc-decam night ... --fakes-collection my_fakes`, or `proc-decam collection ./repo drp <night> --fakes-collection my_fakes`).
 
 # Processing
 

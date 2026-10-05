@@ -14,7 +14,7 @@ inputs = dict(
         "{subset}/flat/raw",
     ],
     science=[
-        "fakes",
+        "{fakes}",
         "refcats",
         "skymaps",
         "{subset}/calib/flat",
@@ -24,7 +24,7 @@ inputs = dict(
         "{subset}/science/raw",
     ],
     drp=[
-        "fakes",
+        "{fakes}",
         # "fakes/template_tests_dense", # temporary for 20190829
         # "fakes/extra", # temporary for 20190401
         "refcats",
@@ -63,6 +63,8 @@ def main():
     parser.add_argument("subset")
     parser.add_argument("--coadd-subset", default="")
     parser.add_argument("--template-type", default="")
+    parser.add_argument("--fakes-collection", default="fakes",
+                        help="Collection holding ingested fakes (see `proc-decam fakes --collection`)")
     parser.add_argument("--log-level", default="INFO")
     parser.add_argument("--overwrite", action="store_true")
 
@@ -74,7 +76,7 @@ def main():
 
     parent = os.path.normpath(f"{args.subset}/{args.coadd_subset}/{args.template_type}/{args.proc_type}")
     
-    input_collections = list(map(lambda x : os.path.normpath(x.format(subset=args.subset, template_type=args.template_type, coadd_subset=args.coadd_subset)), inputs[args.proc_type]))
+    input_collections = list(map(lambda x : os.path.normpath(x.format(fakes=args.fakes_collection, subset=args.subset, template_type=args.template_type, coadd_subset=args.coadd_subset)), inputs[args.proc_type]))
     input_runs = butler.registry.queryCollections(parent + "/*", collectionTypes=CollectionType.RUN)
     
     date_runs = []

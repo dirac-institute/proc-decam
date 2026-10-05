@@ -31,6 +31,8 @@ def main():
     parser.add_argument("--proc-types", nargs="+", choices=["bias", "flat", "drp", "diff_drp"], default=["bias", "flat", "drp"])
     parser.add_argument("--coadd-subset", default=None)
     parser.add_argument("--template-type", default=None)
+    parser.add_argument("--fakes-collection", default="fakes",
+                        help="Collection holding ingested fakes to inject during drp processing")
     parser.add_argument("--where")
     parser.add_argument("--log-level", default="INFO")
     parser.add_argument("--slurm", action="store_true")
@@ -110,6 +112,7 @@ def main():
                     proc_type,
                     night
                 ]
+                cmd += ["--fakes-collection", args.fakes_collection] if proc_type == "drp" else []
                 cmd = " ".join(map(str, cmd))
                 func = partial(run_command)
                 setattr(func, "__name__", f"collection_{night}_{proc_type}")
